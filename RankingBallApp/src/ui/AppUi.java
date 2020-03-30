@@ -238,6 +238,8 @@ public class AppUi {
 		sportsBtnGroup.add(gameTypeFob);
 		
 		selectGameType = new JTextField();
+		selectGameType.setBackground(Color.WHITE);
+		selectGameType.setEditable(false);
 		selectGameType.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		selectGameType.setBorder(null);
 		selectGameType.setText("Sports");
@@ -246,6 +248,8 @@ public class AppUi {
 		selectGameType.setColumns(10);
 		
 		txtCurrency = new JTextField();
+		txtCurrency.setBackground(Color.WHITE);
+		txtCurrency.setEditable(false);
 		txtCurrency.setText("Currency");
 		txtCurrency.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		txtCurrency.setColumns(10);
@@ -273,6 +277,8 @@ public class AppUi {
 		createPanel.add(entryFeeCombo);
 		
 		txtEntryfee = new JTextField();
+		txtEntryfee.setBackground(Color.WHITE);
+		txtEntryfee.setEditable(false);
 		txtEntryfee.setText("Entry Fee");
 		txtEntryfee.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		txtEntryfee.setColumns(10);
@@ -281,6 +287,8 @@ public class AppUi {
 		createPanel.add(txtEntryfee);
 		
 		txtEntries = new JTextField();
+		txtEntries.setBackground(Color.WHITE);
+		txtEntries.setEditable(false);
 		txtEntries.setText("Entries");
 		txtEntries.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		txtEntries.setColumns(10);
@@ -317,6 +325,8 @@ public class AppUi {
 		contestCounts.setColumns(10);
 		
 		txtCount = new JTextField();
+		txtCount.setBackground(Color.WHITE);
+		txtCount.setEditable(false);
 		txtCount.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		txtCount.setBorder(null);
 		txtCount.setText("Count");
