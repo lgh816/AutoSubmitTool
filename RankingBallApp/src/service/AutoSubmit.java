@@ -15,18 +15,18 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AutoSubmit {
+	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
+	private static final String WEB_DRIVER_PATH = "C:/chromedriver/chromedriver.exe";
+	private static final String base_url = "https://play.rankingball.com";
 	
 	public WebDriver driver;
-	private WebElement webElement;	
-	public static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-	public static final String WEB_DRIVER_PATH = "C:/chromedriver/chromedriver.exe";
-	private String base_url;
+	public WebElement webElement;	
 	WebDriverWait wait;
 
 	public Boolean loginProcess(String email, String password) {
 		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
 		driver = new ChromeDriver();
-		base_url = "https://play.rankingball.com";
+		
 		wait = new WebDriverWait(driver, 30);
 		Boolean result = false;
 		
@@ -268,9 +268,9 @@ public class AutoSubmit {
 				} else {
 					webElement.click(); // Click one game
 		
-					/*wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
 					List<WebElement> contestElements = driver.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));
-					int contestSize = contestElements.size();*/
+					int contestSize = contestElements.size();
 					
 					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));

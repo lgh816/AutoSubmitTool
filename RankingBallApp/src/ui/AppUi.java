@@ -7,6 +7,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+
 import service.AutoSubmit;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -26,10 +27,15 @@ import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Point;
+import javax.swing.JList;
 
 public class AppUi {
 
 	private JFrame frmRankingBallAuto;
+	private JPanel mainPanel;
+	private JPanel createPanel;
+	private JPanel submitPanel;
+	
 	private JTextField emailLable;
 	private JTextField passwordLabel;
 	public AppActionListener actionListener;
@@ -37,18 +43,17 @@ public class AppUi {
 	private JButton loginButton;
 	private AutoSubmit autoSubmit;
 	private JPasswordField passwordText;
-	private JButton submitStartButton;
+	private JButton submitContestButton;
 	private JButton createContestButton;
 	private JButton submitRestartButton;
 	public JTextField resultText;
-	private JPanel createPanel;
 	private JTextField selectGameType;
+	private ButtonGroup submitSportsBtnGroup;
 	private ButtonGroup sportsBtnGroup;
 	private ButtonGroup currencyBtnGroup;
 	private JTextField txtCurrency;
 	private JTextField txtEntryfee;
 	private JTextField txtEntries;
-	private JPanel mainPanel;
 	private JToggleButton gameTypeLol;
 	private JToggleButton gameTypeBaseball;
 	private JToggleButton gameTypeSoc;
@@ -60,6 +65,12 @@ public class AppUi {
 	private JTextField contestCounts;
 	private JTextField txtCount;
 	private JTextField createErrorMsg;
+	private JToggleButton submitGameTypeLol;
+	private JToggleButton submitGameTypeBaseball;
+	private JToggleButton submitGameTypeSoc;
+	private JToggleButton submitGameTypeBsk;
+	private JToggleButton submitGameTypeFob;
+	private JTextField submitSports;
 	// public JTextField gameInfo;
 	
 	/**
@@ -97,14 +108,21 @@ public class AppUi {
 		frmRankingBallAuto.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallIcon.ico")));
 		frmRankingBallAuto.setResizable(false);
 		frmRankingBallAuto.setTitle("RANKINGBALL Auto Submit Tool");
-		frmRankingBallAuto.setBounds(100, 100, 346, 574);
+		frmRankingBallAuto.setBounds(100, 100, 346, 636);
 		frmRankingBallAuto.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmRankingBallAuto.getContentPane().setLayout(null);
 		
-		// Main Panel =============================================================================
+		JLabel mainTopImg = new JLabel("");
+		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallImg.PNG"));
+		mainTopImg.setIcon(new ImageIcon(img));
+		mainTopImg.setBounds(0, 0, 340, 247);
+		frmRankingBallAuto.getContentPane().add(mainTopImg);
+		Image bottomImg = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallBottom2.PNG"));
+		
+		// Main Panel ===================================================================================
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
-		mainPanel.setBounds(0, 257, 342, 288);
+		mainPanel.setBounds(0, 257, 342, 351);
 		frmRankingBallAuto.getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
 		
@@ -146,14 +164,14 @@ public class AppUi {
 		passwordText.setBounds(89, 39, 160, 21);
 		mainPanel.add(passwordText);
 		
-		submitStartButton = new JButton("SUBMIT START");
-		submitStartButton.setBounds(12, 92, 155, 44);
-		mainPanel.add(submitStartButton);
-		submitStartButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		submitStartButton.setVisible(false);
-		submitStartButton.setActionCommand("START");
+		submitContestButton = new JButton("SUBMIT");
+		submitContestButton.setBounds(12, 92, 155, 44);
+		mainPanel.add(submitContestButton);
+		submitContestButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitContestButton.setVisible(false);
+		submitContestButton.setActionCommand("SUBMITCONTEST");
 		
-		createContestButton = new JButton("CREATE CONTEST");
+		createContestButton = new JButton("CREATE");
 		createContestButton.setBounds(170, 92, 160, 44);
 		mainPanel.add(createContestButton);
 		createContestButton.setVisible(false);
@@ -167,30 +185,18 @@ public class AppUi {
 		submitRestartButton.setVisible(false);
 		submitRestartButton.setActionCommand("RESTART");
 		
-		resultText = new JTextField();
-		resultText.setBounds(63, 67, 210, 21);
-		mainPanel.add(resultText);
-		resultText.setBackground(Color.WHITE);
-		resultText.setVisible(false);
-		resultText.setForeground(Color.RED);
-		resultText.setHorizontalAlignment(SwingConstants.CENTER);
-		resultText.setEditable(false);
-		resultText.setBorder(null);
-		resultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		resultText.setColumns(10);
-		
-		JLabel label = new JLabel("");
-		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallImg.PNG"));
-		label.setIcon(new ImageIcon(img));
-		label.setBounds(-14, 0, 354, 247);
-		frmRankingBallAuto.getContentPane().add(label);
+		JLabel mainBottomImg = new JLabel("");
+		mainBottomImg.setBounds(0, 160, 342, 190);
+		mainPanel.add(mainBottomImg);
+		mainBottomImg.setIcon(new ImageIcon(bottomImg));
 		
 		// Main Panel End=================================================================================
 		
+		// Create Panel ===================================================================================
 		createPanel = new JPanel();
 		createPanel.setVisible(false);
 		createPanel.setBackground(Color.WHITE);
-		createPanel.setBounds(0, 257, 342, 288);
+		createPanel.setBounds(0, 257, 342, 351);
 		frmRankingBallAuto.getContentPane().add(createPanel);
 		createPanel.setLayout(null);
 		
@@ -303,17 +309,17 @@ public class AppUi {
 		createPanel.add(entriesCombo);
 		
 		JButton createCancelBtn = new JButton("CANCEL");
-		createCancelBtn.setActionCommand("CANCEL");
+		createCancelBtn.setActionCommand("CREATECANCEL");
 		createCancelBtn.setForeground(Color.RED);
 		createCancelBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		createCancelBtn.setBounds(15, 235, 156, 35);
+		createCancelBtn.setBounds(15, 300, 156, 35);
 		createPanel.add(createCancelBtn);
 		
 		JButton createOkBtn = new JButton("CREATE");
 		createOkBtn.setActionCommand("CREATEOK");
 		createOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createOkBtn.setForeground(Color.BLUE);
-		createOkBtn.setBounds(171, 235, 156, 35);
+		createOkBtn.setBounds(171, 300, 156, 35);
 		createPanel.add(createOkBtn);
 		
 		contestCounts = new JTextField();
@@ -346,13 +352,103 @@ public class AppUi {
 		createPanel.add(createErrorMsg);
 		createErrorMsg.setColumns(10);
 		
+		// Create Panel End=================================================================================
+		
+		// Submit Panel ===================================================================================
+		
+		submitSportsBtnGroup = new ButtonGroup();
+		submitPanel = new JPanel();
+		submitPanel.setVisible(false);
+		submitPanel.setBounds(0, 257, 342, 351);
+		submitPanel.setBackground(Color.WHITE);
+		frmRankingBallAuto.getContentPane().add(submitPanel);
+		submitPanel.setLayout(null);
+		
+		submitGameTypeLol = new JToggleButton("League Of Legends");
+		submitGameTypeLol.setSelected(true);
+		submitGameTypeLol.setName("lol");
+		submitGameTypeLol.setActionCommand("submitLol");
+		submitGameTypeLol.setBounds(15, 22, 155, 28);
+		submitPanel.add(submitGameTypeLol);
+		submitSportsBtnGroup.add(submitGameTypeLol);
+		
+		submitGameTypeBaseball = new JToggleButton("Baseball");
+		submitGameTypeBaseball.setName("baseball");
+		submitGameTypeBaseball.setEnabled(false);
+		submitGameTypeBaseball.setActionCommand("submitBaseball");
+		submitGameTypeBaseball.setBounds(172, 22, 155, 28);
+		submitPanel.add(submitGameTypeBaseball);
+		submitSportsBtnGroup.add(submitGameTypeBaseball);
+		
+		submitGameTypeSoc = new JToggleButton("Soccer");
+		submitGameTypeSoc.setName("soccer");
+		submitGameTypeSoc.setEnabled(false);
+		submitGameTypeSoc.setActionCommand("submitSoccer");
+		submitGameTypeSoc.setBounds(15, 53, 101, 28);
+		submitPanel.add(submitGameTypeSoc);
+		submitSportsBtnGroup.add(submitGameTypeSoc);
+		
+		submitGameTypeBsk = new JToggleButton("Basketball");
+		submitGameTypeBsk.setName("basketball");
+		submitGameTypeBsk.setEnabled(false);
+		submitGameTypeBsk.setActionCommand("submitBasketball");
+		submitGameTypeBsk.setBounds(226, 53, 101, 28);
+		submitPanel.add(submitGameTypeBsk);
+		submitSportsBtnGroup.add(submitGameTypeBsk);
+		
+		submitGameTypeFob = new JToggleButton("Football");
+		submitGameTypeFob.setName("football");
+		submitGameTypeFob.setEnabled(false);
+		submitGameTypeFob.setActionCommand("submitFootball");
+		submitGameTypeFob.setBounds(120, 53, 102, 28);
+		submitPanel.add(submitGameTypeFob);
+		submitSportsBtnGroup.add(submitGameTypeFob);
+		
+		submitSports = new JTextField();
+		submitSports.setBounds(146, 0, 49, 21);
+		submitSports.setText("Sports");
+		submitSports.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitSports.setEditable(false);
+		submitSports.setColumns(10);
+		submitSports.setBorder(null);
+		submitSports.setBackground(Color.WHITE);
+		submitPanel.add(submitSports);
+		
+		resultText = new JTextField();
+		resultText.setBounds(70, 269, 210, 21);
+		resultText.setBackground(Color.WHITE);
+		resultText.setVisible(false);
+		resultText.setForeground(Color.RED);
+		resultText.setHorizontalAlignment(SwingConstants.CENTER);
+		resultText.setEditable(false);
+		resultText.setBorder(null);
+		resultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		resultText.setColumns(10);
+		submitPanel.add(resultText);
+		
+		JButton submitCancelBtn = new JButton("CANCEL");
+		submitCancelBtn.setActionCommand("SUBMITCANCEL");
+		submitCancelBtn.setForeground(Color.RED);
+		submitCancelBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitCancelBtn.setBounds(15, 300, 156, 35);
+		submitPanel.add(submitCancelBtn);
+		
+		JButton submitOkBtn = new JButton("All SUBMIT");
+		submitOkBtn.setActionCommand("SUBMITOK");
+		submitOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitOkBtn.setForeground(Color.BLUE);
+		submitOkBtn.setBounds(171, 300, 156, 35);
+		submitPanel.add(submitOkBtn);
+		
 		submitRestartButton.addActionListener(actionListener);
 		createContestButton.addActionListener(actionListener);
+		submitOkBtn.addActionListener(actionListener);
+		submitCancelBtn.addActionListener(actionListener);
 		createOkBtn.addActionListener(actionListener);
 		createCancelBtn.addActionListener(actionListener);
 		currencyGdc.addActionListener(actionListener);
 		currencyPoint.addActionListener(actionListener);
-		submitStartButton.addActionListener(actionListener);
+		submitContestButton.addActionListener(actionListener);
 		loginButton.addActionListener(actionListener);
 	}
 	
@@ -374,28 +470,26 @@ public class AppUi {
 				Boolean loginResult = autoSubmit.loginProcess(email, cnvtPassword);
 				if (loginResult) {
 					System.out.println("==== LOGIN SUCCESS");
-					// hideElement();
 					ArrayList<Object> gameInfos = autoSubmit.getTodaysMatch();
 					System.out.println("==== GAME INFO = "+gameInfos);
-					// loginAfterPanel.setVisible(true);
 					emailText.setEnabled(false);
 					passwordText.setEnabled(false);
 					loginButton.setEnabled(false);
-					submitStartButton.setVisible(true);
+					submitContestButton.setVisible(true);
 					createContestButton.setVisible(true);
 				} else {
 					System.out.println("Login Fail");
 					autoSubmit.driver.close();
 				}
-			} else if ("START".equals(action)) {
-//				resultText.setVisible(true);
-//				resultText.setForeground(Color.BLUE);
-//				resultText.setText("Processing.....");
+			} else if ("SUBMITCONTEST".equals(action)) {
+				mainPanel.setVisible(false);
+				submitPanel.setVisible(true);
+			} else if ("SUBMITOK".equals(action)) {
 				System.out.println("==== SUBMIT START");
 				submitProcessAction();
 			} else if ("RESTART".equals(action)) {
-				resultText.setVisible(false);
-				resultText.setText("");
+//				resultText.setVisible(false);
+//				resultText.setText("");
 				System.out.println("==== SUBMIT RESTART");
 				submitProcessAction();
 			} else if ("CREATECONTEST".equals(action)) {
@@ -408,7 +502,10 @@ public class AppUi {
 				entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"25", "50", "100", "250"}));
 			} else if ("CREATEOK".equals(action)) {
 				getCreateParam();
-			} else if ("CANCEL".equals(action)) {
+			} else if ("SUBMITCANCEL".equals(action)) {
+				mainPanel.setVisible(true);
+				submitPanel.setVisible(false);
+			} else if ("CREATECANCEL".equals(action)) {
 				mainPanel.setVisible(true);
 				createPanel.setVisible(false);
 				setClearSelection();
@@ -493,13 +590,16 @@ public class AppUi {
 		}
 		
 		private void submitProcessAction() {
+			
+			autoSubmit.startRankingBall();
+			
 			/*resultText.setText("");
 			resultText.setVisible(false);*/
 			
 			/*gameInfo.setText("");
 			gameInfo.setVisible(false);*/
 			
-			Boolean processResult = false;
+			/*Boolean processResult = false;
 			String resultMsg = null;
 			if (submitStartButton.isVisible()) {
 				submitStartButton.setEnabled(false);
@@ -508,7 +608,7 @@ public class AppUi {
 				submitRestartButton.setEnabled(false);			
 			}
 			processResult = autoSubmit.startRankingBall();
-			// Thread startSubmit = new Thread(autoSubmit.startRankingBall());
+
 			if (processResult) {
 				if (submitRestartButton.isVisible()) {
 					submitRestartButton.setEnabled(true);
@@ -537,13 +637,7 @@ public class AppUi {
 				resultText.setForeground(Color.RED);
 			}
 			resultText.setVisible(true);
-			resultText.setText(resultMsg);
+			resultText.setText(resultMsg);*/
 		}
-		
-		/*public void setMatchTitle(String title) {
-			System.out.println("MATCH TITLE = "+title);
-			gameInfo.setVisible(true);
-			gameInfo.setText(title);
-		}*/
 	}
 }
