@@ -85,7 +85,7 @@ public class AutoSubmit {
 				gameElements = driver.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				String eachGameId = gameElements.get(i).getAttribute("id");
 				String checkJoined = driver.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
-				System.out.println("CHECK JOINED = "+checkJoined);
+				System.out.println("SUBMIT CHECK JOINED = "+checkJoined);
 				if (checkJoined.isEmpty()) {
 					webElement = driver.findElement(By.id(eachGameId));
 					webElement.click();
@@ -258,64 +258,68 @@ public class AutoSubmit {
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 				gameElements = driver.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				String eachGameId = gameElements.get(i).getAttribute("id");
-				webElement = driver.findElement(By.id(eachGameId));
-				int eachContentSize = Integer.parseInt(driver.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
-				System.out.println("====== [CREATE] [Contests Size = "+eachContentSize+"] ======");
-				if (eachContentSize > 60) {
-					backFlag = false;
-					System.out.println("====== [CREATE] [Over 60 Contests] =====");
-					Thread.sleep(2000);
-				} else {
-					webElement.click(); // Click one game
-		
-					wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
-					List<WebElement> contestElements = driver.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));
-					int contestSize = contestElements.size();
-					
-					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
-					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
-					
-					// wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("layer-bg loading-bg")));
-					WebElement createBtnElement = driver.findElement(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a"));
-					Thread.sleep(5000);
-					createBtnElement.click(); // Click 'Create Contest' button
-					WebElement currencyBtn = null;
-					if ("gdc".equals(currency)) {
-						currencyBtn = driver.findElement(By.xpath("//*[@id='assetType']/li[1]"));
-					} else { // 'point'
-						currencyBtn = driver.findElement(By.xpath("//*[@id='assetType']/li[2]"));
-					}
-					currencyBtn.click();
-					List<WebElement> typeArr = driver.findElements(By.xpath("//*[@id='contestType']/li"));
-					int typeSize = typeArr.size();
-					for (int j = 0; j < typeSize; j++) {
-						typeArr = driver.findElements(By.xpath("//*[@id='contestType']/li"));
-						int childCnt = j+1;
-						WebElement type = typeArr.get(j);
-						String text = type.getText();
-						if (!"Head-to-Head".equals(text)) {
-							for (int k = 0; k < count; k ++) {
-								if (eachContentSize < 61) {
-									Thread.sleep(2500);
-									wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='contestType']/li["+childCnt+"]")));
-									WebElement eachType = driver.findElement(By.xpath("//*[@id='contestType']/li["+childCnt+"]"));
-									eachType.click();
-									createContestAction(entryFee, entries, entryFeeIdx, entriesIdx);
-									System.out.println("====== [CREATE] [Create "+(k+1)+"] "+text+" [Fee] "+entryFee+" "+currency+" [Entry] "+entries+"");
-									System.out.println("====== [CREATE] [contestSize] "+eachContentSize+" =====");
-									eachContentSize++;
-								}
-							}
-							System.out.println("====== [CREATE] [Create "+count+"] "+text+" Complete");
-						} else {
-							break;
+				String checkJoined = driver.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
+				System.out.println("CREATE CHECK JOINED = "+checkJoined);
+				if (checkJoined.isEmpty()) {
+					webElement = driver.findElement(By.id(eachGameId));
+					int eachContentSize = Integer.parseInt(driver.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
+					System.out.println("====== [CREATE] [Contests Size = "+eachContentSize+"] ======");
+					if (eachContentSize > 60) {
+						backFlag = false;
+						System.out.println("====== [CREATE] [Over 60 Contests] =====");
+						Thread.sleep(2000);
+					} else {
+						webElement.click(); // Click one game
+			
+						wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
+						List<WebElement> contestElements = driver.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));
+						int contestSize = contestElements.size();
+						
+						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
+						wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
+						
+						// wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("layer-bg loading-bg")));
+						WebElement createBtnElement = driver.findElement(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a"));
+						Thread.sleep(5000);
+						createBtnElement.click(); // Click 'Create Contest' button
+						WebElement currencyBtn = null;
+						if ("gdc".equals(currency)) {
+							currencyBtn = driver.findElement(By.xpath("//*[@id='assetType']/li[1]"));
+						} else { // 'point'
+							currencyBtn = driver.findElement(By.xpath("//*[@id='assetType']/li[2]"));
 						}
+						currencyBtn.click();
+						List<WebElement> typeArr = driver.findElements(By.xpath("//*[@id='contestType']/li"));
+						int typeSize = typeArr.size();
+						for (int j = 0; j < typeSize; j++) {
+							typeArr = driver.findElements(By.xpath("//*[@id='contestType']/li"));
+							int childCnt = j+1;
+							WebElement type = typeArr.get(j);
+							String text = type.getText();
+							if (!"Head-to-Head".equals(text)) {
+								for (int k = 0; k < count; k ++) {
+									if (eachContentSize < 61) {
+										Thread.sleep(2500);
+										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='contestType']/li["+childCnt+"]")));
+										WebElement eachType = driver.findElement(By.xpath("//*[@id='contestType']/li["+childCnt+"]"));
+										eachType.click();
+										setCreateOptions(entryFee, entries, entryFeeIdx, entriesIdx);
+										System.out.println("====== [CREATE] [Create "+(k+1)+"] "+text+" [Fee] "+entryFee+" "+currency+" [Entry] "+entries+"");
+										System.out.println("====== [CREATE] [contestSize] "+eachContentSize+" =====");
+										eachContentSize =  eachContentSize + 1;
+									}
+								}
+								System.out.println("====== [CREATE] [Create "+count+"] "+text+" Complete");
+							} else {
+								break;
+							}
+						}
+						driver.navigate().back();
 					}
-					driver.navigate().back();
-				}
-				if (backFlag) {
-					driver.navigate().back();
-					Thread.sleep(2000);
+					if (backFlag) {
+						driver.navigate().back();
+						Thread.sleep(2000);
+					}
 				}
 			}
 			return true;
@@ -327,7 +331,7 @@ public class AutoSubmit {
 		return result;
 	}
 	
-	private void createContestAction(String entryFee, String entries, int entryFeeIdx, int entriesIdx) {
+	private void setCreateOptions(String entryFee, String entries, int entryFeeIdx, int entriesIdx) {
 		try {
 			Thread.sleep(2000);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[5]/div[1]/select")));
@@ -342,6 +346,16 @@ public class AutoSubmit {
 			WebElement nextBtn = driver.findElement(By.xpath("//*[@id='container']/div[2]/div/div[3]/div/button"));
 			nextBtn.click();
 			
+			submitProcess();
+		} catch (Exception e) {
+			submitProcess();
+			String exceptionMsg = e.getMessage();
+			System.out.println("[setCreateOptions] Exception Message = "+exceptionMsg);
+		}
+	}
+	
+	private void submitProcess() {
+		try {
 			Thread.sleep(1000);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
@@ -380,7 +394,7 @@ public class AutoSubmit {
 		} catch (Exception e) {
 			e.printStackTrace();
 			String exceptionMsg = e.getMessage();
-			System.out.println("Auto Create Exception Message = "+exceptionMsg);
+			System.out.println("[submitProcess] Exception Message = "+exceptionMsg);
 		}
 	}
 	
