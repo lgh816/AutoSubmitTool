@@ -180,7 +180,7 @@ public class AppUi {
 		resultText.setColumns(10);
 		
 		JLabel label = new JLabel("");
-		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBllImg.PNG"));
+		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallImg.PNG"));
 		label.setIcon(new ImageIcon(img));
 		label.setBounds(-14, 0, 354, 247);
 		frmRankingBallAuto.getContentPane().add(label);
