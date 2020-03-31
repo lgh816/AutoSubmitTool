@@ -1,5 +1,6 @@
 package service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,7 @@ public class AutoSubmit {
 		return result;
 	}
 	
-	public Boolean startRankingBall() {
+	public Boolean startSubmitContest() {
 		Boolean result = false;
 		try {
 			// Count of Games
@@ -77,7 +78,8 @@ public class AutoSubmit {
 			int gameSize = gameElements.size();
 			
 			System.out.println("======= [SUBMIT] Today's Game Count = "+gameSize);
-			for (int i = 0; i < gameSize; i++) {
+			
+			for (int i = 0; i < gameSize; i++) { // Loop Today Games
 				int totalGdc = 0;
 				int totalPoint = 0;
 				Thread.sleep(1500);
@@ -86,11 +88,9 @@ public class AutoSubmit {
 				String eachGameId = gameElements.get(i).getAttribute("id");
 				String checkJoined = driver.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
 				System.out.println("SUBMIT CHECK JOINED = "+checkJoined);
-				if (checkJoined.isEmpty()) {
+				if (checkJoined.isEmpty()) { // Check joined or not
 					webElement = driver.findElement(By.id(eachGameId));
 					webElement.click();
-					// Thread.sleep(1500);
-					// Count of Contests
 					
 					wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
 					List<WebElement> contestElements = driver.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));
@@ -106,6 +106,12 @@ public class AutoSubmit {
 					// appUi.actionListener.setMatchTitle(matchTitle);
 					for (int j = 0 ; j < contestSize; j++) {
 						Thread.sleep(1000);
+						
+						double percent = (double) ( (double)(j+1) / (double)contestSize) * 100;
+						String dispPattern = "0";
+						DecimalFormat form = new DecimalFormat(dispPattern);
+						System.out.println("==== [SUBMIT] Check Contest "+form.format(percent)+"%");
+						
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
 						wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
 						contestElements = driver.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));
@@ -129,7 +135,12 @@ public class AutoSubmit {
 								Thread.sleep(1000);
 								wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".entry-fee")));
 								contestElements.get(j).findElement(By.cssSelector(".entry-fee")).click(); // Click Each Contest
-								String popTxt = driver.findElement(By.xpath("//*[@id='wrab']/div[3]/div/div/div/div[2]")).getText();
+								String popTxt = "";
+								try {
+									popTxt = driver.findElement(By.xpath("//*[@id='wrab']/div[3]/div/div/div/div[2]")).getText();
+								} catch (Exception e) {
+									
+								}
 								System.out.println("Check Popup Text = "+popTxt);
 								Thread.sleep(1500);
 								if (!popTxt.isEmpty()) {
@@ -406,7 +417,7 @@ public class AutoSubmit {
 		Map<String, String> eachGameInfo = new HashMap<String, String>();
 		/* [
 		 * 		{
-		 * 			"title" : "WE vs RW",
+		 * 			"title" : "WE (2 - 6) vs RW (4 - 4)",
 		 * 			"time" : "06:00 PM"
 		 * 			"contests" : 138,
 		 * 			"game_id" : 34324,
@@ -419,14 +430,19 @@ public class AutoSubmit {
 			String game_id = gameElements.get(i).getAttribute("id");
 			String time = driver.findElement(By.xpath("//*[@id='"+game_id+"']/div[1]/div[1]/p")).getText();
 			String homeTeam = driver.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[1]/div[1]/span[2]")).getText();
+			String cnvtHomeTeam[] = homeTeam.split("\n");
 			String awayTeam = driver.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[1]/div[2]/span[2]")).getText();
-			String title = homeTeam + " vs " + awayTeam;
+			String cnvtAwayTeam[] = awayTeam.split("\n");
+			String title = cnvtHomeTeam[0] + " vs " + cnvtAwayTeam[0];
 			String contests = driver.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[2]/p[2]/span")).getText();
 			
-			eachGameInfo.put("title", title);
+			String result = title + " " + time + " " + contests + " Contests";
+					
+			/*eachGameInfo.put("title", title);
 			eachGameInfo.put("time", time);
-			eachGameInfo.put("contests", contests);
+			eachGameInfo.put("contests", contests);*/
 			eachGameInfo.put("game_id", game_id);
+			eachGameInfo.put("result", result);
 			gameInfoArr.add(eachGameInfo);
 			eachGameInfo = new HashMap<String, String>();
 		}

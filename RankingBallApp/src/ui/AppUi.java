@@ -19,15 +19,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Toolkit;
 import javax.swing.JPasswordField;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
+import javax.swing.ListCellRenderer;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+
 import java.awt.Point;
 import javax.swing.JList;
+import javax.swing.border.LineBorder;
+import javax.swing.AbstractListModel;
+import java.awt.Insets;
+import javax.swing.border.EmptyBorder;
+import java.awt.List;
 
 public class AppUi {
 
@@ -43,6 +52,7 @@ public class AppUi {
 	private JButton loginButton;
 	private AutoSubmit autoSubmit;
 	private JPasswordField passwordText;
+	private JButton submitOkBtn;
 	private JButton submitContestButton;
 	private JButton createContestButton;
 	private JButton submitRestartButton;
@@ -113,7 +123,7 @@ public class AppUi {
 		frmRankingBallAuto.getContentPane().setLayout(null);
 		
 		JLabel mainTopImg = new JLabel("");
-		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallImg.PNG"));
+		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallTop.PNG"));
 		mainTopImg.setIcon(new ImageIcon(img));
 		mainTopImg.setBounds(0, 0, 340, 247);
 		frmRankingBallAuto.getContentPane().add(mainTopImg);
@@ -126,16 +136,16 @@ public class AppUi {
 		mainPanel.setLayout(null);
 		
 		JLabel mainBottomImg = new JLabel("");
-		Image bottomImg = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallBottom2.PNG"));
+		Image bottomImg = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallBottom.PNG"));
 		mainBottomImg.setIcon(new ImageIcon(bottomImg));
 		mainBottomImg.setBounds(0, 160, 342, 190);
 		mainPanel.add(mainBottomImg);
 		
 		emailLable = new JTextField();
+		emailLable.setBorder(null);
 		emailLable.setBounds(7, 12, 53, 21);
 		mainPanel.add(emailLable);
 		emailLable.setHorizontalAlignment(SwingConstants.CENTER);
-		emailLable.setBorder(null);
 		emailLable.setEditable(false);
 		emailLable.setBackground(Color.WHITE);
 		emailLable.setFont(new Font("±¼¸²", Font.BOLD, 12));
@@ -182,13 +192,6 @@ public class AppUi {
 		createContestButton.setVisible(false);
 		createContestButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createContestButton.setActionCommand("CREATECONTEST");
-		
-		submitRestartButton = new JButton("SUBMIT RESTART");
-		submitRestartButton.setBounds(12, 92, 318, 44);
-		mainPanel.add(submitRestartButton);
-		submitRestartButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		submitRestartButton.setVisible(false);
-		submitRestartButton.setActionCommand("RESTART");
 		
 		// Main Panel End=================================================================================
 		
@@ -428,7 +431,6 @@ public class AppUi {
 		resultText.setForeground(Color.RED);
 		resultText.setHorizontalAlignment(SwingConstants.CENTER);
 		resultText.setEditable(false);
-		resultText.setBorder(null);
 		resultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		resultText.setColumns(10);
 		submitPanel.add(resultText);
@@ -440,12 +442,19 @@ public class AppUi {
 		submitStopBtn.setBounds(69, 300, 130, 35);
 		submitPanel.add(submitStopBtn);
 		
-		JButton submitOkBtn = new JButton("All SUBMIT");
+		submitOkBtn = new JButton("All SUBMIT");
 		submitOkBtn.setActionCommand("SUBMITOK");
 		submitOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitOkBtn.setForeground(Color.BLUE);
 		submitOkBtn.setBounds(203, 300, 130, 35);
 		submitPanel.add(submitOkBtn);
+		
+		submitRestartButton = new JButton("RESTART");
+		submitRestartButton.setBounds(203, 300, 130, 35);
+		submitRestartButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitRestartButton.setVisible(false);
+		submitRestartButton.setActionCommand("SUBMITRESTART");
+		submitPanel.add(submitRestartButton);
 		
 		JButton submitBackBtn = new JButton("<");
 		submitBackBtn.setForeground(Color.BLACK);
@@ -453,6 +462,29 @@ public class AppUi {
 		submitBackBtn.setActionCommand("SUBMITBACK");
 		submitBackBtn.setBounds(15, 300, 49, 35);
 		submitPanel.add(submitBackBtn);
+		
+		GameListRenderer gameListRenderer = new GameListRenderer();
+		
+		DefaultListModel<String> model = new DefaultListModel<String>();
+		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		
+		JList<String> gameList = new JList<String>(model);
+		gameList.setFocusable(false);
+		gameList.setCellRenderer(gameListRenderer);
+		gameList.setBounds(15, 91, 312, 170);
+		gameList.setFixedCellHeight(40);
+		submitPanel.add(gameList);
 		
 		submitRestartButton.addActionListener(actionListener);
 		createContestButton.addActionListener(actionListener);
@@ -468,10 +500,22 @@ public class AppUi {
 		loginButton.addActionListener(actionListener);
 	}
 	
-	public class AppActionListener implements ActionListener {
-		/*SubmitProcessAction submitProcessAction;
-		CreateProcessAction createProcessAction;*/
+	class GameListRenderer extends JLabel implements ListCellRenderer<Object> {
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			// TODO Auto-generated method stub
+			System.out.println("RENDERER = "+list);
+			System.out.println("RENDERER = "+value);
+			System.out.println("RENDERER = "+index);
+			setBorder(new LineBorder(new Color(0, 0, 0)));
+			setText(value.toString());
+			setFont(new Font("±¼¸²", Font.BOLD, 13));
+			return this;
+		}
 		
+	}
+	public class AppActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			String action = ev.getActionCommand();
@@ -513,7 +557,7 @@ public class AppUi {
 				clearSubmitParam();
 			} else if ("RESTART".equals(action)) {
 				System.out.println("==== SUBMIT RESTART");
-				// submitProcessAction.start();
+				submitProcessAction();
 			} else if ("CREATECONTEST".equals(action)) {
 				mainPanel.setVisible(false);
 				createPanel.setVisible(true);
@@ -534,78 +578,29 @@ public class AppUi {
 		}
 		
 		private void submitProcessAction() {
-			Boolean processResult = autoSubmit.startRankingBall();
-			String resultMsg = null;
-			if (processResult) {
-				/*if (submitRestartButton.isVisible()) {
-					submitRestartButton.setEnabled(true);
-					submitRestartButton.setVisible(false);						
-				}
-				if (!submitStartButton.isVisible()) {
-					submitStartButton.setVisible(true);	
-					createContestButton.setVisible(true);
-				}
-				submitStartButton.setEnabled(true);
-				createContestButton.setEnabled(true);*/
-				resultMsg = "Submit Entry Success";
-				resultText.setForeground(Color.BLUE);
-			} else {
-				/*if (submitStartButton.isVisible()) {
-					submitStartButton.setEnabled(true);
-					submitStartButton.setVisible(false);
-					createContestButton.setEnabled(true);
-					createContestButton.setVisible(false);
-				}
-				if (!submitRestartButton.isVisible()) {
-					submitRestartButton.setVisible(true);
-				}
-				submitRestartButton.setEnabled(true);*/
-				resultMsg = "Submit Fail. Please Try Again";
-				resultText.setForeground(Color.RED);
-			}
-			resultText.setVisible(true);
-			resultText.setText(resultMsg);
-		}
-		
-		public class SubmitProcessAction extends Thread {
-			public void run() {
-				Boolean processResult = autoSubmit.startRankingBall();
-			}
-			/*resultText.setText("");
-			resultText.setVisible(false);*/
-			
-			/*gameInfo.setText("");
-			gameInfo.setVisible(false);*/
-			
-			/*Boolean processResult = false;
-			String resultMsg = null;
-			if (submitStartButton.isVisible()) {
-				submitStartButton.setEnabled(false);
-				createContestButton.setEnabled(false);
+			if (submitOkBtn.isVisible()) {
+				submitOkBtn.setEnabled(false);
 			} else if (submitRestartButton.isVisible()){
 				submitRestartButton.setEnabled(false);			
 			}
-			processResult = autoSubmit.startRankingBall();
-
+			
+			Boolean processResult = autoSubmit.startSubmitContest();
+			String resultMsg = null;
 			if (processResult) {
 				if (submitRestartButton.isVisible()) {
 					submitRestartButton.setEnabled(true);
 					submitRestartButton.setVisible(false);						
 				}
-				if (!submitStartButton.isVisible()) {
-					submitStartButton.setVisible(true);	
-					createContestButton.setVisible(true);
+				if (!submitOkBtn.isVisible()) {
+					submitOkBtn.setVisible(true);	
 				}
-				submitStartButton.setEnabled(true);
-				createContestButton.setEnabled(true);
+				submitOkBtn.setEnabled(true);
 				resultMsg = "Submit Entry Success";
 				resultText.setForeground(Color.BLUE);
 			} else {
-				if (submitStartButton.isVisible()) {
-					submitStartButton.setEnabled(true);
-					submitStartButton.setVisible(false);
-					createContestButton.setEnabled(true);
-					createContestButton.setVisible(false);
+				if (submitOkBtn.isVisible()) {
+					submitOkBtn.setEnabled(true);
+					submitOkBtn.setVisible(false);
 				}
 				if (!submitRestartButton.isVisible()) {
 					submitRestartButton.setVisible(true);
@@ -615,7 +610,13 @@ public class AppUi {
 				resultText.setForeground(Color.RED);
 			}
 			resultText.setVisible(true);
-			resultText.setText(resultMsg);*/
+			resultText.setText(resultMsg);
+		}
+		
+		public class SubmitProcessAction extends Thread {
+			public void run() {
+				Boolean processResult = autoSubmit.startSubmitContest();
+			}
 		}
 		
 		private void getCreateParam() {
