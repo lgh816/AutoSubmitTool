@@ -35,6 +35,8 @@ public class AutoSubmit {
 			driver.manage().window().maximize();
 			driver.get(base_url);
 	
+			checkPopup();
+			
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".login > p")));
 			webElement = driver.findElement(By.cssSelector(".login > p"));
 			webElement.click();
@@ -70,6 +72,7 @@ public class AutoSubmit {
 	}
 	
 	public Boolean startSubmitContest() {
+		// checkPopup();
 		Boolean result = false;
 		try {
 			// Count of Games
@@ -207,7 +210,8 @@ public class AutoSubmit {
 			}
 			result = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			startSubmitContest();
 			String exceptionMsg = e.getMessage();
 			
 			System.out.println("Auto Submit Exception Message = "+exceptionMsg);
@@ -221,6 +225,7 @@ public class AutoSubmit {
 	}
 
 	public Boolean startMakeContest(Map<String, String> param) {
+		// checkPopup();
 		Boolean result = false;
 		/*{
 			"lol" : "105001",
@@ -448,5 +453,21 @@ public class AutoSubmit {
 		}
 		
 		return gameInfoArr;
+	}
+	
+	private void checkPopup() {
+		try {
+			Boolean result = false;
+			WebDriverWait wait = new WebDriverWait(driver, 5);
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='btnClose']")));
+			result = driver.findElement(By.xpath("//*[@id='btnClose']")).isDisplayed();
+			System.out.println("CHECK POPUP = "+result);
+			if (result) {
+				driver.findElement(By.xpath("//*[@id='btnClose']")).click();
+			}
+		} catch (Exception e) {
+			String exceptionMsg = e.getMessage();
+			System.out.println("[Check Event Popup] Exception Message = "+exceptionMsg);
+		}
 	}
 }

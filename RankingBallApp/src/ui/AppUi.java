@@ -55,6 +55,8 @@ public class AppUi {
 	private JButton submitOkBtn;
 	private JButton submitContestButton;
 	private JButton createContestButton;
+	private JButton createStopBtn;
+	private JButton createBackBtn;
 	private JButton submitRestartButton;
 	public JTextField resultText;
 	private JTextField selectGameType;
@@ -311,16 +313,17 @@ public class AppUi {
 		entriesCombo.setBounds(171, 178, 156, 28);
 		createPanel.add(entriesCombo);
 		
-		JButton createBackBtn = new JButton("<");
+		createBackBtn = new JButton("<");
 		createBackBtn.setForeground(Color.BLACK);
 		createBackBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createBackBtn.setActionCommand("CREATEBACK");
 		createBackBtn.setBounds(15, 300, 49, 35);
 		createPanel.add(createBackBtn);
 		
-		JButton createStopBtn = new JButton("STOP");
+		createStopBtn = new JButton("STOP");
 		createStopBtn.setActionCommand("CREATESTOP");
 		createStopBtn.setForeground(Color.RED);
+		// createStopBtn.setEnabled(true);
 		createStopBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createStopBtn.setBounds(69, 300, 130, 35);
 		createPanel.add(createStopBtn);
@@ -453,6 +456,7 @@ public class AppUi {
 		submitRestartButton.setBounds(203, 300, 130, 35);
 		submitRestartButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitRestartButton.setVisible(false);
+		submitRestartButton.setForeground(Color.BLUE);
 		submitRestartButton.setActionCommand("SUBMITRESTART");
 		submitPanel.add(submitRestartButton);
 		
@@ -541,7 +545,7 @@ public class AppUi {
 					createContestButton.setVisible(true);
 				} else {
 					System.out.println("Login Fail");
-					autoSubmit.driver.close();
+					// autoSubmit.driver.close();
 				}
 			} else if ("SUBMITCONTEST".equals(action)) {
 				mainPanel.setVisible(false);
@@ -555,7 +559,7 @@ public class AppUi {
 				mainPanel.setVisible(true);
 				submitPanel.setVisible(false);
 				clearSubmitParam();
-			} else if ("RESTART".equals(action)) {
+			} else if ("SUBMITRESTART".equals(action)) {
 				System.out.println("==== SUBMIT RESTART");
 				submitProcessAction();
 			} else if ("CREATECONTEST".equals(action)) {
@@ -662,6 +666,8 @@ public class AppUi {
 				createErrorMsg.setForeground(Color.RED);
 				createErrorMsg.setText(errorMsg);
 			} else {
+				/*createStopBtn.setEnabled(false);
+				createBackBtn.setEnabled(true);*/
 				createParam.put("sports", sportsBtn);
 				createParam.put("currency", currencyBtn);
 				createParam.put("entryFee", entryFee);
@@ -678,6 +684,8 @@ public class AppUi {
 					createErrorMsg.setForeground(Color.RED);
 					createErrorMsg.setText("Create Fail. Please Try Again");
 				}
+				/*createStopBtn.setEnabled(true);
+				createBackBtn.setEnabled(false);*/
 			}
 		}
 		
