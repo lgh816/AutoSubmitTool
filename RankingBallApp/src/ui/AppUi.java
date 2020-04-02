@@ -59,6 +59,7 @@ public class AppUi {
 	private JButton createContestBtn;
 	private JButton createStopBtn;
 	private JButton createBackBtn;
+	private JButton createOkBtn;
 	// public JButton submitRestartButton;
 	public JButton submitStopBtn;
 	public JButton submitBackBtn;
@@ -337,7 +338,7 @@ public class AppUi {
 		createStopBtn.setBounds(66, 300, 130, 35);
 		createPanel.add(createStopBtn);
 		
-		JButton createOkBtn = new JButton("CREATE");
+		createOkBtn = new JButton("CREATE");
 		createOkBtn.setActionCommand("CREATEOK");
 		createOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createOkBtn.setForeground(Color.BLUE);
@@ -688,7 +689,7 @@ public class AppUi {
 				createBackBtn.setEnabled(true);*/
 				createBackBtn.setEnabled(false);
 				createStopBtn.setEnabled(true);
-				createContestBtn.setEnabled(false);
+				createOkBtn.setEnabled(false);
 				createParam.put("sports", sportsBtn);
 				createParam.put("currency", currencyBtn);
 				createParam.put("entryFee", entryFee);
@@ -697,7 +698,7 @@ public class AppUi {
 				createParam.put("entriesIdx", Integer.toString(entriesCombo.getSelectedIndex()));
 				createParam.put("count", Integer.toString(count));
 				System.out.println(createParam);
-				appCreateContest = new AppCreateContest(createParam, createBackBtn, createStopBtn, createContestBtn);
+				appCreateContest = new AppCreateContest(createParam, createBackBtn, createStopBtn, createOkBtn);
 				appCreateContest.setDaemon(true);
 				appCreateContest.start();
 				
