@@ -3,6 +3,8 @@ package service;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,9 +19,15 @@ public class AppCreateContest extends Thread implements CommonData {
 	private WebDriverWait wait = new WebDriverWait(DRIVER, 30);
 	private AppCommon appCommon = new AppCommon();
 	private Map<String, String> param;
+	private JButton CREATE_BACK_BTN;
+	private JButton CREATE_STOP_BTN;
+	private JButton CREATE_CONTEST_BTN;
 	
-	public AppCreateContest(Map<String, String> param) {
+	public AppCreateContest(Map<String, String> param, JButton createBackBtn, JButton createStopBtn, JButton createContestBtn) {
 		this.param = param;
+		this.CREATE_BACK_BTN = createBackBtn;
+		this.CREATE_STOP_BTN = createStopBtn;
+		this.CREATE_CONTEST_BTN = createContestBtn;
 	}
 	
 	public void run() {
@@ -68,9 +76,9 @@ public class AppCreateContest extends Thread implements CommonData {
 					webElement = DRIVER.findElement(By.id(eachGameId));
 					int eachContentSize = Integer.parseInt(DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
 					System.out.println("====== [CREATE] [Contests Size = "+eachContentSize+"] ======");
-					if (eachContentSize > 60) {
+					if (eachContentSize > 80) {
 						backFlag = false;
-						System.out.println("====== [CREATE] [Over 60 Contests] =====");
+						System.out.println("====== [CREATE] [Over 80 Contests] =====");
 						Thread.sleep(2000);
 					} else {
 						webElement.click(); // Click one game
@@ -102,7 +110,7 @@ public class AppCreateContest extends Thread implements CommonData {
 							String text = type.getText();
 							if (!"Head-to-Head".equals(text)) {
 								for (int k = 0; k < count; k ++) {
-									if (eachContentSize < 61) {
+									if (eachContentSize < 81) {
 										Thread.sleep(2500);
 										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='contestType']/li["+childCnt+"]")));
 										WebElement eachType = DRIVER.findElement(By.xpath("//*[@id='contestType']/li["+childCnt+"]"));

@@ -13,9 +13,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import data.CommonData;
 
 public class AppCommon implements CommonData {
-	private WebDriverWait wait = new WebDriverWait(DRIVER, 30);
+	private WebDriverWait wait;
 	
 	public ArrayList<Object> getTodaysMatch() {
+		wait = new WebDriverWait(DRIVER, 30);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 		List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 		int gameSize = gameElements.size();

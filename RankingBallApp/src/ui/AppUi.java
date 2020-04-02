@@ -55,8 +55,8 @@ public class AppUi {
 	private JButton loginButton;
 	private JPasswordField passwordText;
 	public JButton submitOkBtn;
-	private JButton submitContestButton;
-	private JButton createContestButton;
+	private JButton submitContestBtn;
+	private JButton createContestBtn;
 	private JButton createStopBtn;
 	private JButton createBackBtn;
 	// public JButton submitRestartButton;
@@ -65,11 +65,13 @@ public class AppUi {
 	public JTextField resultText;
 	private JTextField selectGameType;
 	private ButtonGroup submitSportsBtnGroup;
+	private ButtonGroup submitCurrencyBtnGroup;
 	private ButtonGroup sportsBtnGroup;
 	private ButtonGroup currencyBtnGroup;
 	private JTextField txtCurrency;
 	private JTextField txtEntryfee;
 	private JTextField txtEntries;
+	private JToggleButton submitCurrencyAll;
 	private JToggleButton gameTypeLol;
 	private JToggleButton gameTypeBaseball;
 	private JToggleButton gameTypeSoc;
@@ -87,6 +89,7 @@ public class AppUi {
 	private JToggleButton submitGameTypeBsk;
 	private JToggleButton submitGameTypeFob;
 	private JTextField submitSports;
+	private JTextField submitCurrency;
 	
 	/**
 	 * Launch the application.
@@ -125,7 +128,7 @@ public class AppUi {
 		frmRankingBallAuto.setBackground(Color.WHITE);
 		frmRankingBallAuto.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallIcon.ico")));
 		frmRankingBallAuto.setResizable(false);
-		frmRankingBallAuto.setTitle("RANKINGBALL Auto Submit Tool");
+		frmRankingBallAuto.setTitle("GDC Mining Machine");
 		frmRankingBallAuto.setBounds(100, 100, 346, 636);
 		frmRankingBallAuto.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmRankingBallAuto.getContentPane().setLayout(null);
@@ -187,19 +190,19 @@ public class AppUi {
 		passwordText.setBounds(89, 39, 160, 21);
 		mainPanel.add(passwordText);
 		
-		submitContestButton = new JButton("SUBMIT");
-		submitContestButton.setBounds(12, 92, 155, 44);
-		mainPanel.add(submitContestButton);
-		submitContestButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		submitContestButton.setVisible(false);
-		submitContestButton.setActionCommand("SUBMITCONTEST");
+		submitContestBtn = new JButton("SUBMIT");
+		submitContestBtn.setBounds(12, 92, 155, 44);
+		mainPanel.add(submitContestBtn);
+		submitContestBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitContestBtn.setVisible(false);
+		submitContestBtn.setActionCommand("SUBMITCONTEST");
 		
-		createContestButton = new JButton("CREATE");
-		createContestButton.setBounds(170, 92, 160, 44);
-		mainPanel.add(createContestButton);
-		createContestButton.setVisible(false);
-		createContestButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		createContestButton.setActionCommand("CREATECONTEST");
+		createContestBtn = new JButton("CREATE");
+		createContestBtn.setBounds(170, 92, 160, 44);
+		mainPanel.add(createContestBtn);
+		createContestBtn.setVisible(false);
+		createContestBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		createContestBtn.setActionCommand("CREATECONTEST");
 		
 		// Main Panel End=================================================================================
 		
@@ -323,22 +326,22 @@ public class AppUi {
 		createBackBtn.setForeground(Color.BLACK);
 		createBackBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createBackBtn.setActionCommand("CREATEBACK");
-		createBackBtn.setBounds(15, 300, 49, 35);
+		createBackBtn.setBounds(13, 300, 49, 35);
 		createPanel.add(createBackBtn);
 		
 		createStopBtn = new JButton("STOP");
 		createStopBtn.setActionCommand("CREATESTOP");
 		createStopBtn.setForeground(Color.RED);
-		// createStopBtn.setEnabled(true);
+		createStopBtn.setEnabled(false);
 		createStopBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		createStopBtn.setBounds(69, 300, 130, 35);
+		createStopBtn.setBounds(66, 300, 130, 35);
 		createPanel.add(createStopBtn);
 		
 		JButton createOkBtn = new JButton("CREATE");
 		createOkBtn.setActionCommand("CREATEOK");
 		createOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createOkBtn.setForeground(Color.BLUE);
-		createOkBtn.setBounds(203, 300, 130, 35);
+		createOkBtn.setBounds(199, 300, 130, 35);
 		createPanel.add(createOkBtn);
 		
 		contestCounts = new JTextField();
@@ -449,7 +452,7 @@ public class AppUi {
 		submitStopBtn.setActionCommand("SUBMITSTOP");
 		submitStopBtn.setForeground(Color.RED);
 		submitStopBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		submitStopBtn.setBounds(69, 300, 130, 35);
+		submitStopBtn.setBounds(66, 300, 130, 35);
 		submitPanel.add(submitStopBtn);
 		
 		submitOkBtn = new JButton("All SUBMIT");
@@ -457,7 +460,7 @@ public class AppUi {
 		submitOkBtn.setEnabled(true);
 		submitOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitOkBtn.setForeground(Color.BLUE);
-		submitOkBtn.setBounds(203, 300, 130, 35);
+		submitOkBtn.setBounds(199, 300, 130, 35);
 		submitPanel.add(submitOkBtn);
 		
 		/*submitRestartButton = new JButton("RESTART");
@@ -473,34 +476,63 @@ public class AppUi {
 		submitBackBtn.setEnabled(true);
 		submitBackBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitBackBtn.setActionCommand("SUBMITBACK");
-		submitBackBtn.setBounds(15, 300, 49, 35);
+		submitBackBtn.setBounds(13, 300, 49, 35);
 		submitPanel.add(submitBackBtn);
 		
 		GameListRenderer gameListRenderer = new GameListRenderer();
 		
 		DefaultListModel<String> model = new DefaultListModel<String>();
-		/*model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");
-		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");
-		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");
-		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");
-		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");
-		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");*/
+		/*model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");*/
+		
 		
 		JList<String> gameList = new JList<String>(model);
 		gameList.setFocusable(false);
 		gameList.setCellRenderer(gameListRenderer);
-		gameList.setBounds(15, 91, 312, 170);
-		gameList.setFixedCellHeight(40);
+		gameList.setBounds(15, 142, 312, 119);
+		gameList.setFixedCellHeight(20);
 		submitPanel.add(gameList);
 		
+		submitCurrency = new JTextField();
+		submitCurrency.setHorizontalAlignment(SwingConstants.CENTER);
+		submitCurrency.setText("Currency");
+		submitCurrency.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitCurrency.setEditable(false);
+		submitCurrency.setColumns(10);
+		submitCurrency.setBorder(null);
+		submitCurrency.setBackground(Color.WHITE);
+		submitCurrency.setBounds(138, 86, 68, 21);
+		submitPanel.add(submitCurrency);
+		
+		submitCurrencyBtnGroup = new ButtonGroup();
+		submitCurrencyAll = new JToggleButton("All");
+		submitCurrencyAll.setSelected(true);
+		submitCurrencyAll.setBounds(15, 109, 101, 28);
+		submitCurrencyAll.setActionCommand("All");
+		submitPanel.add(submitCurrencyAll);
+		submitCurrencyBtnGroup.add(submitCurrencyAll);
+		
+		JToggleButton submitCurrencyGdc = new JToggleButton("GDC Only");
+		submitCurrencyGdc.setBounds(120, 109, 101, 28);
+		submitCurrencyGdc.setActionCommand("GDC");
+		submitPanel.add(submitCurrencyGdc);
+		submitCurrencyBtnGroup.add(submitCurrencyGdc);
+		
+		JToggleButton submitCurrencyPoint = new JToggleButton("Point Only");
+		submitCurrencyPoint.setBounds(226, 109, 101, 28);
+		submitCurrencyPoint.setActionCommand("POINT");
+		submitPanel.add(submitCurrencyPoint);
+		submitCurrencyBtnGroup.add(submitCurrencyPoint);
+		
 		// submitRestartButton.addActionListener(actionListener);
-		createContestButton.addActionListener(actionListener);
+		createContestBtn.addActionListener(actionListener);
 		submitOkBtn.addActionListener(actionListener);
 		submitStopBtn.addActionListener(actionListener);
 		submitBackBtn.addActionListener(actionListener);
@@ -509,7 +541,7 @@ public class AppUi {
 		createBackBtn.addActionListener(actionListener);
 		currencyGdc.addActionListener(actionListener);
 		currencyPoint.addActionListener(actionListener);
-		submitContestButton.addActionListener(actionListener);
+		submitContestBtn.addActionListener(actionListener);
 		loginButton.addActionListener(actionListener);
 	}
 	
@@ -551,8 +583,8 @@ public class AppUi {
 					emailText.setEnabled(false);
 					passwordText.setEnabled(false);
 					loginButton.setEnabled(false);
-					submitContestButton.setVisible(true);
-					createContestButton.setVisible(true);
+					submitContestBtn.setVisible(true);
+					createContestBtn.setVisible(true);
 				} else {
 					System.out.println("Login Fail");
 					// appCommon.driver.close();
@@ -569,9 +601,8 @@ public class AppUi {
 				mainPanel.setVisible(true);
 				submitPanel.setVisible(false);
 				resultText.setText("");
-			/*} else if ("SUBMITRESTART".equals(action)) {
-				System.out.println("==== SUBMIT RESTART");
-				submitProcessAction();*/
+				submitGameTypeLol.setSelected(true);
+				submitCurrencyAll.setSelected(true);
 			} else if ("CREATECONTEST".equals(action)) {
 				mainPanel.setVisible(false);
 				createPanel.setVisible(true);
@@ -579,7 +610,7 @@ public class AppUi {
 			} else if ("CREATEOK".equals(action)) {
 				getCreateParam();
 			} else if ("CREATESTOP".equals(action)) {
-				
+				appCreateContest.interrupt();
 			} else if ("CREATEBACK".equals(action)) {
 				mainPanel.setVisible(true);
 				createPanel.setVisible(false);
@@ -593,50 +624,20 @@ public class AppUi {
 		
 		private void submitProcessAction() {
 			ButtonModel sportsBtnModel = submitSportsBtnGroup.getSelection();
+			ButtonModel currencyBtnModel = submitCurrencyBtnGroup.getSelection();
+			
 			String sportsBtn = sportsBtnModel.getActionCommand();
+			String currencyBtn = currencyBtnModel.getActionCommand(); // all, gdc, point
+			
 			resultText.setText("");
 			resultText.setForeground(Color.BLUE);
 			submitStopBtn.setEnabled(true);
 			submitBackBtn.setEnabled(false);
 			submitOkBtn.setEnabled(false);
 			
-			appSubmitContest = new AppSubmitContest(sportsBtn, resultText, submitBackBtn, submitStopBtn, submitOkBtn);
+			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, resultText, submitBackBtn, submitStopBtn, submitOkBtn);
 			appSubmitContest.setDaemon(true);
 			appSubmitContest.start();
-			
-			/*if (submitOkBtn.isVisible()) {
-				submitOkBtn.setEnabled(false);
-			} else if (submitRestartButton.isVisible()){
-				submitRestartButton.setEnabled(false);			
-			}
-			
-			Boolean processResult = appSubmitContest.startSubmitContest();
-			String resultMsg = null;
-			if (processResult) {
-				if (submitRestartButton.isVisible()) {
-					submitRestartButton.setEnabled(true);
-					submitRestartButton.setVisible(false);						
-				}
-				if (!submitOkBtn.isVisible()) {
-					submitOkBtn.setVisible(true);	
-				}
-				submitOkBtn.setEnabled(true);
-				resultMsg = "Submit Entry Success";
-				resultText.setForeground(Color.BLUE);
-			} else {
-				if (submitOkBtn.isVisible()) {
-					submitOkBtn.setEnabled(true);
-					submitOkBtn.setVisible(false);
-				}
-				if (!submitRestartButton.isVisible()) {
-					submitRestartButton.setVisible(true);
-				}
-				submitRestartButton.setEnabled(true);
-				resultMsg = "Submit Fail. Please Try Again";
-				resultText.setForeground(Color.RED);
-			}
-			resultText.setVisible(true);
-			resultText.setText(resultMsg);*/
 		}
 
 		private void getCreateParam() {
@@ -660,9 +661,9 @@ public class AppUi {
 					try {
 						count = Integer.parseInt(contestCounts.getText());
 						if (count > 60) {
-							errorMsg = "Please Input Under 60";
+							errorMsg = "Please Input Under 80";
 						} else if (count == 0) {
-							errorMsg = "Please Input Count ( ~ 60 )";
+							errorMsg = "Please Input Count ( ~ 80 )";
 						} else {
 							entryFee = String.valueOf(entryFeeCombo.getSelectedItem());
 							entries = String.valueOf(entriesCombo.getSelectedItem());
@@ -685,6 +686,9 @@ public class AppUi {
 			} else {
 				/*createStopBtn.setEnabled(false);
 				createBackBtn.setEnabled(true);*/
+				createBackBtn.setEnabled(false);
+				createStopBtn.setEnabled(true);
+				createContestBtn.setEnabled(false);
 				createParam.put("sports", sportsBtn);
 				createParam.put("currency", currencyBtn);
 				createParam.put("entryFee", entryFee);
@@ -693,7 +697,7 @@ public class AppUi {
 				createParam.put("entriesIdx", Integer.toString(entriesCombo.getSelectedIndex()));
 				createParam.put("count", Integer.toString(count));
 				System.out.println(createParam);
-				appCreateContest = new AppCreateContest(createParam);
+				appCreateContest = new AppCreateContest(createParam, createBackBtn, createStopBtn, createContestBtn);
 				appCreateContest.setDaemon(true);
 				appCreateContest.start();
 				

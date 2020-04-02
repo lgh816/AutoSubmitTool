@@ -19,17 +19,19 @@ public class AppSubmitContest extends Thread implements CommonData {
 	private WebElement webElement;	
 	private WebDriverWait wait = new WebDriverWait(DRIVER, 30);
 	private String SPORTS_ID;
+	private String CURRENCY;
 	private JTextField RESULT_TEXT;
 	private JButton SUBMIT_BACK_BTN;
 	private JButton SUBMIT_STOP_BTN;
 	private JButton SUBMIT_OK_BTN;
 	
-	public AppSubmitContest(String gameType, JTextField resultText, JButton submitBackBtn, JButton submitStopBtn, JButton submitOkBtn) {
+	public AppSubmitContest(String gameType, String currencyBtn, JTextField resultText, JButton submitBackBtn, JButton submitStopBtn, JButton submitOkBtn) {
 		this.SPORTS_ID = appCommon.getGameId(gameType);
 		this.RESULT_TEXT = resultText;
 		this.SUBMIT_BACK_BTN = submitBackBtn;
 		this.SUBMIT_STOP_BTN = submitStopBtn;
 		this.SUBMIT_OK_BTN = submitOkBtn;
+		this.CURRENCY = currencyBtn;
 	}
 	
 	public void run() {
@@ -93,67 +95,77 @@ public class AppSubmitContest extends Thread implements CommonData {
 							} else { // Free
 								type = "FREE";
 							}
-							if (!"JOINED".equals(joinStatus)) {
-								Thread.sleep(1000);
-								wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".entry-fee")));
-								contestElements.get(j).findElement(By.cssSelector(".entry-fee")).click(); // Click Each Contest
-								String popTxt = "";
-								try {
-									popTxt = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[3]/div/div/div/div[2]")).getText();
-								} catch (Exception e) {
-									
+							Boolean checkCurrencyType = true;
+							System.out.println("==== [SUBMIT] Selected Currency = "+CURRENCY);
+							if (CURRENCY != "All" && type != "FREE") {
+								if (CURRENCY != type) {
+									System.out.println("==== [SUBMIT] Selected Currency And Game Type Is Not Matched");
+									checkCurrencyType = false;
 								}
-								System.out.println("Check Popup Text = "+popTxt);
-								Thread.sleep(1500);
-								if (!popTxt.isEmpty()) {
-									// if ("There is not enough balance".equals(popTxt)) {
-									wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
+							}
+							if (checkCurrencyType) {
+								if (!"JOINED".equals(joinStatus)) {
 									Thread.sleep(1000);
-									WebElement popupOkButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
-									popupOkButton.click();
-								} else {
-									// WebElement loadButtonElement = new WebDriverWait(DRIVER, 20).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
-									// wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='load']"))); // presenceOfElementLocated <-> visibilityOfElementLocated
-									wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
-									wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
-									WebElement loadButtonElement = DRIVER.findElement(By.xpath("//*[@id='load']"));
-									Thread.sleep(1000);
-									String checkEntries = loadButtonElement.getAttribute("class");
-									System.out.println("SUCCESS LOAD ENTRY - "+ j + " / "+ contestSize +" - "+ gameFee +" "+type);
-									if ("entries on".equals(checkEntries)) {
-										loadButtonElement.click();
-										// Thread.sleep(1500);
-										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button")));
-										WebElement selectEntryButton = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button"));
-										selectEntryButton.click();
-										// Thread.sleep(1500);
-										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='submit']")));
-										WebElement submitButton = DRIVER.findElement(By.xpath("//*[@id='submit']"));
-										submitButton.click();
-										wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
-										WebElement okButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
-										okButton.click();
-										Thread.sleep(1000);
-										wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
-										Thread.sleep(1000);
-										WebElement secondOkButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
-										Thread.sleep(1000);
-										secondOkButton.click();
-										Thread.sleep(1300);
-										DRIVER.navigate().back();
-									} else {
-										System.out.println("======= [SUBMIT] Entries Not Exist !!!!!!!! ========");
-										DRIVER.navigate().back();
-										// break;
+									wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".entry-fee")));
+									contestElements.get(j).findElement(By.cssSelector(".entry-fee")).click(); // Click Each Contest
+									String popTxt = "";
+									try {
+										popTxt = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[3]/div/div/div/div[2]")).getText();
+									} catch (Exception e) {
+										
 									}
-									loadButtonElement = null;
-									checkEntries = null;
-								}
-							} else if ("JOINED".equals(joinStatus)) {
-								if ("asset-121015".equals(kindOfFee)) { // GDC
-									totalGdc += gameFee;
-								} else { // asset-121017 -> Point
-									totalPoint += gameFee;
+									System.out.println("Check Popup Text = "+popTxt);
+									Thread.sleep(1500);
+									if (!popTxt.isEmpty()) {
+										// if ("There is not enough balance".equals(popTxt)) {
+										wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
+										Thread.sleep(1000);
+										WebElement popupOkButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
+										popupOkButton.click();
+									} else {
+										// WebElement loadButtonElement = new WebDriverWait(DRIVER, 20).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
+										// wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='load']"))); // presenceOfElementLocated <-> visibilityOfElementLocated
+										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
+										wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
+										WebElement loadButtonElement = DRIVER.findElement(By.xpath("//*[@id='load']"));
+										Thread.sleep(1000);
+										String checkEntries = loadButtonElement.getAttribute("class");
+										System.out.println("SUCCESS LOAD ENTRY - "+ j + " / "+ contestSize +" - "+ gameFee +" "+type);
+										if ("entries on".equals(checkEntries)) {
+											loadButtonElement.click();
+											// Thread.sleep(1500);
+											wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button")));
+											WebElement selectEntryButton = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button"));
+											selectEntryButton.click();
+											// Thread.sleep(1500);
+											wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='submit']")));
+											WebElement submitButton = DRIVER.findElement(By.xpath("//*[@id='submit']"));
+											submitButton.click();
+											wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
+											WebElement okButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
+											okButton.click();
+											Thread.sleep(1000);
+											wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
+											Thread.sleep(1000);
+											WebElement secondOkButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
+											Thread.sleep(1000);
+											secondOkButton.click();
+											Thread.sleep(1300);
+											DRIVER.navigate().back();
+										} else {
+											System.out.println("======= [SUBMIT] Entries Not Exist !!!!!!!! ========");
+											DRIVER.navigate().back();
+											// break;
+										}
+										loadButtonElement = null;
+										checkEntries = null;
+									}
+								} else if ("JOINED".equals(joinStatus)) {
+									if ("asset-121015".equals(kindOfFee)) { // GDC
+										totalGdc += gameFee;
+									} else { // asset-121017 -> Point
+										totalPoint += gameFee;
+									}
 								}
 							}
 						}
@@ -196,19 +208,21 @@ public class AppSubmitContest extends Thread implements CommonData {
 			SUBMIT_BACK_BTN.setEnabled(true);
 			SUBMIT_STOP_BTN.setEnabled(false);
 			SUBMIT_OK_BTN.setEnabled(true);
-			if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
-				RESULT_TEXT.setForeground(Color.RED);
-				System.out.println("CLICK STOP BUTTON");
-				RESULT_TEXT.setText("Submit Stoped");
-			} else if (exceptionMsg.contains("Expected condition failed")) {
-				RESULT_TEXT.setForeground(Color.RED);
-				System.out.println("OCCUR EXCEPTION");
-				RESULT_TEXT.setText("Submit Fail. Please Try Again");
-				System.out.println("SPORTS_ID = "+SPORTS_ID);
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+SPORTS_ID+"']")));
-				wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+SPORTS_ID+"']")));
-				WebElement sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+SPORTS_ID+"']"));
-				sportsBtn.click();
+			if (exceptionMsg != null) {
+				if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
+					RESULT_TEXT.setForeground(Color.RED);
+					System.out.println("CLICK STOP BUTTON");
+					RESULT_TEXT.setText("Submit Stoped");
+				} else if (exceptionMsg.contains("Expected condition failed")) {
+					RESULT_TEXT.setForeground(Color.RED);
+					System.out.println("OCCUR EXCEPTION");
+					RESULT_TEXT.setText("Submit Fail. Please Try Again");
+					System.out.println("SPORTS_ID = "+SPORTS_ID);
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+SPORTS_ID+"']")));
+					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+SPORTS_ID+"']")));
+					WebElement sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+SPORTS_ID+"']"));
+					sportsBtn.click();
+				}
 			} else {
 				System.out.println("SUBMIT SUCCESS");
 				RESULT_TEXT.setForeground(Color.BLUE);
