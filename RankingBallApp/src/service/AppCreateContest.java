@@ -15,10 +15,15 @@ public class AppCreateContest extends Thread implements CommonData {
 	// private AppCommon appCommon = new AppCommon();
 	private WebElement webElement;	
 	private WebDriverWait wait = new WebDriverWait(DRIVER, 30);
+	private AppCommon appCommon = new AppCommon();
+	private Map<String, String> param;
 	
-	public Boolean startMakeContest(Map<String, String> param) {
-		// checkPopup();
-		Boolean result = false;
+	public AppCreateContest(Map<String, String> param) {
+		this.param = param;
+	}
+	
+	public void run() {
+		// Boolean result = false;
 		/*{
 			"lol" : "105001",
 			"soccer" : "104001",
@@ -27,6 +32,7 @@ public class AppCreateContest extends Thread implements CommonData {
 			"baseball" : "104002"
 		}*/
 		try {
+			String gameId = null;
 			String gameType = param.get("sports");
 			String currency = param.get("currency");
 			String entryFee = param.get("entryFee");
@@ -34,19 +40,9 @@ public class AppCreateContest extends Thread implements CommonData {
 			int entryFeeIdx = Integer.parseInt(param.get("entryFeeIdx"));
 			int entriesIdx = Integer.parseInt(param.get("entriesIdx"));
 			int count = Integer.parseInt(param.get("count"));
-			String gameId = null;
 			
-			if ("lol".equals(gameType)) {
-				gameId = "105001";
-			} else if ("soccer".equals(gameType)) {
-				gameId = "104001";
-			} else if ("basketball".equals(gameType)) {
-				gameId = "104004";
-			} else if ("football".equals(gameType)) {
-				gameId = "104003";
-			} else { // baseball
-				gameId = "104002";
-			}
+			gameId = appCommon.getGameId(gameType);
+			
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+gameId+"']")));
 			WebElement gameTypeElement = DRIVER.findElement(By.xpath("//*[@id='"+gameId+"']"));
 			String checkActive = gameTypeElement.getAttribute("class");
@@ -130,13 +126,13 @@ public class AppCreateContest extends Thread implements CommonData {
 					}
 				}
 			}
-			return true;
+			// return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			String exceptionMsg = e.getMessage();
 			System.out.println("Auto Create Exception Message = "+exceptionMsg);
 		}
-		return result;
+		// return result;
 	}
 	
 	private void setCreateOptions(String entryFee, String entries, int entryFeeIdx, int entriesIdx) {

@@ -56,6 +56,22 @@ public class AppCommon implements CommonData {
 		return gameInfoArr;
 	}
 	
+	public String getGameId(String type) {
+		String gameId = null;
+		if ("lol".equals(type)) {
+			gameId = "105001";
+		} else if ("soccer".equals(type)) {
+			gameId = "104001";
+		} else if ("basketball".equals(type)) {
+			gameId = "104004";
+		} else if ("football".equals(type)) {
+			gameId = "104003";
+		} else if ("baseball".equals(type)){ // baseball
+			gameId = "104002";
+		}
+		return gameId;
+	}
+	
 	public void checkPopup() {
 		try {
 			Boolean result = false;

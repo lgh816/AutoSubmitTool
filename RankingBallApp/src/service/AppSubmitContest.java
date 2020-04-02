@@ -1,8 +1,11 @@
 package service;
 
-import java.lang.management.ThreadInfo;
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -15,8 +18,22 @@ public class AppSubmitContest extends Thread implements CommonData {
 	private AppCommon appCommon = new AppCommon();
 	private WebElement webElement;	
 	private WebDriverWait wait = new WebDriverWait(DRIVER, 30);
+	private String SPORTS_ID;
+	private JTextField RESULT_TEXT;
+	private JButton SUBMIT_BACK_BTN;
+	private JButton SUBMIT_STOP_BTN;
+	private JButton SUBMIT_OK_BTN;
+	
+	public AppSubmitContest(String gameType, JTextField resultText, JButton submitBackBtn, JButton submitStopBtn, JButton submitOkBtn) {
+		this.SPORTS_ID = appCommon.getGameId(gameType);
+		this.RESULT_TEXT = resultText;
+		this.SUBMIT_BACK_BTN = submitBackBtn;
+		this.SUBMIT_STOP_BTN = submitStopBtn;
+		this.SUBMIT_OK_BTN = submitOkBtn;
+	}
 	
 	public void run() {
+		String exceptionMsg = null;
 		try {
 			System.out.println("Submit Thread RUN");
 			
@@ -144,7 +161,10 @@ public class AppSubmitContest extends Thread implements CommonData {
 						double percent = (double) ( (double)(j+1) / (double)contestSize) * 100;
 						String dispPattern = "0";
 						DecimalFormat form = new DecimalFormat(dispPattern);
+						String progressText = matchTitle + " " + form.format(percent)+"%";
+						RESULT_TEXT.setText(progressText);
 						System.out.println("==== [SUBMIT] Check Contest "+form.format(percent)+"%");
+						progressText = null;
 						// ==========================================
 					}
 
@@ -159,9 +179,11 @@ public class AppSubmitContest extends Thread implements CommonData {
 			}
 			result = true;
 		} catch (Exception e) {
-			String exceptionMsg = e.getMessage();
+			e.printStackTrace();
+			exceptionMsg = e.getMessage();
 			System.out.println("Auto Submit Exception Message = "+exceptionMsg);
 			// Stop Thread Msg = 'sleep interrupted'
+			// 'Expected condition failed'
 			
 			/*DRIVER.navigate().back();
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='105001']")));
@@ -170,7 +192,36 @@ public class AppSubmitContest extends Thread implements CommonData {
 			lolButton.click();
 			startSubmitContest();*/
 		} finally {
-			System.out.println("Submit Thread Finally");
+			
+			SUBMIT_BACK_BTN.setEnabled(true);
+			SUBMIT_STOP_BTN.setEnabled(false);
+			SUBMIT_OK_BTN.setEnabled(true);
+			if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
+				RESULT_TEXT.setForeground(Color.RED);
+				System.out.println("CLICK STOP BUTTON");
+				RESULT_TEXT.setText("Submit Stoped");
+			} else if (exceptionMsg.contains("Expected condition failed")) {
+				RESULT_TEXT.setForeground(Color.RED);
+				System.out.println("OCCUR EXCEPTION");
+				RESULT_TEXT.setText("Submit Fail. Please Try Again");
+				System.out.println("SPORTS_ID = "+SPORTS_ID);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+SPORTS_ID+"']")));
+				wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+SPORTS_ID+"']")));
+				WebElement sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+SPORTS_ID+"']"));
+				sportsBtn.click();
+			} else {
+				System.out.println("SUBMIT SUCCESS");
+				RESULT_TEXT.setForeground(Color.BLUE);
+				RESULT_TEXT.setText("Submit Entry Success");
+			}
+			
+			/*submitStopBtn.setEnabled(false);
+			submitBackBtn.setEnabled(true);
+			submitOkBtn.setEnabled(true);*/
+			
+/*			appUi.submitOkBtn.setEnabled(true);
+			appUi.submitStopBtn.setEnabled(false);
+			appUi.submitBackBtn.setEnabled(true);*/
 		}
 	}
 	

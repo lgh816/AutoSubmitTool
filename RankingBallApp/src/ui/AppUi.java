@@ -54,14 +54,14 @@ public class AppUi {
 	private JTextField emailText;
 	private JButton loginButton;
 	private JPasswordField passwordText;
-	private JButton submitOkBtn;
+	public JButton submitOkBtn;
 	private JButton submitContestButton;
 	private JButton createContestButton;
 	private JButton createStopBtn;
 	private JButton createBackBtn;
-	private JButton submitRestartButton;
-	private JButton submitStopBtn;
-	private JButton submitBackBtn;
+	// public JButton submitRestartButton;
+	public JButton submitStopBtn;
+	public JButton submitBackBtn;
 	public JTextField resultText;
 	private JTextField selectGameType;
 	private ButtonGroup submitSportsBtnGroup;
@@ -109,9 +109,9 @@ public class AppUi {
 	 */
 	public AppUi() {
 		appLogin = new AppLogin();
-		appCommon = new AppCommon();
-		appSubmitContest = new AppSubmitContest();
-		appCreateContest = new AppCreateContest();
+		// appCommon = new AppCommon();
+		// appSubmitContest = new AppSubmitContest(null);
+		// appCreateContest = new AppCreateContest(null);
 		actionListener = new AppActionListener();
 		initialize();
 	}
@@ -386,7 +386,7 @@ public class AppUi {
 		submitGameTypeLol = new JToggleButton("League Of Legends");
 		submitGameTypeLol.setSelected(true);
 		submitGameTypeLol.setName("lol");
-		submitGameTypeLol.setActionCommand("submitLol");
+		submitGameTypeLol.setActionCommand("lol");
 		submitGameTypeLol.setBounds(15, 22, 155, 28);
 		submitPanel.add(submitGameTypeLol);
 		submitSportsBtnGroup.add(submitGameTypeLol);
@@ -435,10 +435,9 @@ public class AppUi {
 		
 		resultText = new JTextField();
 		resultText.setBorder(null);
-		resultText.setBounds(70, 269, 210, 21);
+		resultText.setBounds(15, 269, 312, 21);
 		resultText.setBackground(Color.WHITE);
-		resultText.setVisible(false);
-		resultText.setForeground(Color.RED);
+		resultText.setForeground(Color.BLUE);
 		resultText.setHorizontalAlignment(SwingConstants.CENTER);
 		resultText.setEditable(false);
 		resultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
@@ -461,13 +460,13 @@ public class AppUi {
 		submitOkBtn.setBounds(203, 300, 130, 35);
 		submitPanel.add(submitOkBtn);
 		
-		submitRestartButton = new JButton("RESTART");
+		/*submitRestartButton = new JButton("RESTART");
 		submitRestartButton.setBounds(203, 300, 130, 35);
 		submitRestartButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitRestartButton.setVisible(false);
 		submitRestartButton.setForeground(Color.BLUE);
 		submitRestartButton.setActionCommand("SUBMITRESTART");
-		submitPanel.add(submitRestartButton);
+		submitPanel.add(submitRestartButton);*/
 		
 		submitBackBtn = new JButton("<");
 		submitBackBtn.setForeground(Color.BLACK);
@@ -500,7 +499,7 @@ public class AppUi {
 		gameList.setFixedCellHeight(40);
 		submitPanel.add(gameList);
 		
-		submitRestartButton.addActionListener(actionListener);
+		// submitRestartButton.addActionListener(actionListener);
 		createContestButton.addActionListener(actionListener);
 		submitOkBtn.addActionListener(actionListener);
 		submitStopBtn.addActionListener(actionListener);
@@ -565,16 +564,14 @@ public class AppUi {
 				System.out.println("==== SUBMIT START");
 				submitProcessAction();
 			} else if ("SUBMITSTOP".equals(action)) {
-				System.out.println("THREAD INTERUPTED");
-				submitStopAction();
-				System.out.println("THREAD INTERUPTED END");
+				appSubmitContest.interrupt();
 			} else if ("SUBMITBACK".equals(action)) {
 				mainPanel.setVisible(true);
 				submitPanel.setVisible(false);
-				clearSubmitParam();
-			} else if ("SUBMITRESTART".equals(action)) {
+				resultText.setText("");
+			/*} else if ("SUBMITRESTART".equals(action)) {
 				System.out.println("==== SUBMIT RESTART");
-				submitProcessAction();
+				submitProcessAction();*/
 			} else if ("CREATECONTEST".equals(action)) {
 				mainPanel.setVisible(false);
 				createPanel.setVisible(true);
@@ -595,15 +592,17 @@ public class AppUi {
 		}
 		
 		private void submitProcessAction() {
+			ButtonModel sportsBtnModel = submitSportsBtnGroup.getSelection();
+			String sportsBtn = sportsBtnModel.getActionCommand();
+			resultText.setText("");
+			resultText.setForeground(Color.BLUE);
 			submitStopBtn.setEnabled(true);
 			submitBackBtn.setEnabled(false);
 			submitOkBtn.setEnabled(false);
 			
-			appSubmitContest = new AppSubmitContest();
-			System.out.println("THREAD START");
+			appSubmitContest = new AppSubmitContest(sportsBtn, resultText, submitBackBtn, submitStopBtn, submitOkBtn);
 			appSubmitContest.setDaemon(true);
 			appSubmitContest.start();
-			System.out.println("THREAD END");
 			
 			/*if (submitOkBtn.isVisible()) {
 				submitOkBtn.setEnabled(false);
@@ -639,15 +638,7 @@ public class AppUi {
 			resultText.setVisible(true);
 			resultText.setText(resultMsg);*/
 		}
-		
-		private void submitStopAction() {
-			appSubmitContest.interrupt();
-			
-			submitStopBtn.setEnabled(false);
-			submitBackBtn.setEnabled(true);
-			submitOkBtn.setEnabled(true);
-		}
-		
+
 		private void getCreateParam() {
 			String errorMsg = null;
 			Map<String, String> createParam = new HashMap<String, String>();
@@ -659,9 +650,10 @@ public class AppUi {
 			String entries = null;
 			
 			int count = 0;
-			ButtonModel sportsBtnmodel = sportsBtnGroup.getSelection();
-			if (sportsBtnmodel != null) {
-				sportsBtn = sportsBtnmodel.getActionCommand();
+			
+			ButtonModel sportsBtnModel = sportsBtnGroup.getSelection();
+			if (sportsBtnModel != null) {
+				sportsBtn = sportsBtnModel.getActionCommand();
 				ButtonModel currencyBtnmodel = currencyBtnGroup.getSelection();
 				if (currencyBtnmodel != null) {
 					currencyBtn = currencyBtnmodel.getActionCommand();
@@ -701,14 +693,20 @@ public class AppUi {
 				createParam.put("entriesIdx", Integer.toString(entriesCombo.getSelectedIndex()));
 				createParam.put("count", Integer.toString(count));
 				System.out.println(createParam);
-				Boolean result = appCreateContest.startMakeContest(createParam);
-				if (result) {
+				appCreateContest = new AppCreateContest(createParam);
+				appCreateContest.setDaemon(true);
+				appCreateContest.start();
+				
+				// Boolean result = appCreateContest.startMakeContest(createParam);
+				
+				/*if (result) {
 					createErrorMsg.setForeground(Color.BLUE);
 					createErrorMsg.setText("Create Complete");
 				} else {
 					createErrorMsg.setForeground(Color.RED);
 					createErrorMsg.setText("Create Fail. Please Try Again");
-				}
+				}*/
+				
 				/*createStopBtn.setEnabled(true);
 				createBackBtn.setEnabled(false);*/
 			}
@@ -726,11 +724,6 @@ public class AppUi {
 		private void clearCreateParam() {
 			sportsBtnGroup.clearSelection();
 			currencyBtnGroup.clearSelection();
-		}
-		
-		private void clearSubmitParam() {
-			resultText.setText("");
-			resultText.setVisible(false);
 		}
 	}
 }
