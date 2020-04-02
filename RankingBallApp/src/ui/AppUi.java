@@ -8,7 +8,11 @@ import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
-import service.AutoSubmit;
+import service.AppCommon;
+import service.AppCreateContest;
+import service.AppLogin;
+import service.AppSubmitContest;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Font;
@@ -24,22 +28,22 @@ import java.awt.Toolkit;
 import javax.swing.JPasswordField;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
-import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 
-import java.awt.Point;
 import javax.swing.JList;
 import javax.swing.border.LineBorder;
-import javax.swing.AbstractListModel;
-import java.awt.Insets;
-import javax.swing.border.EmptyBorder;
-import java.awt.List;
 
 public class AppUi {
 
+	private AppCommon appCommon;
+	private AppLogin appLogin;
+	private AppSubmitContest appSubmitContest;
+	private AppCreateContest appCreateContest;
+	public AppActionListener actionListener;
+	
 	private JFrame frmRankingBallAuto;
 	private JPanel mainPanel;
 	private JPanel createPanel;
@@ -47,10 +51,8 @@ public class AppUi {
 	
 	private JTextField emailLable;
 	private JTextField passwordLabel;
-	public AppActionListener actionListener;
 	private JTextField emailText;
 	private JButton loginButton;
-	private AutoSubmit autoSubmit;
 	private JPasswordField passwordText;
 	private JButton submitOkBtn;
 	private JButton submitContestButton;
@@ -58,6 +60,8 @@ public class AppUi {
 	private JButton createStopBtn;
 	private JButton createBackBtn;
 	private JButton submitRestartButton;
+	private JButton submitStopBtn;
+	private JButton submitBackBtn;
 	public JTextField resultText;
 	private JTextField selectGameType;
 	private ButtonGroup submitSportsBtnGroup;
@@ -83,7 +87,6 @@ public class AppUi {
 	private JToggleButton submitGameTypeBsk;
 	private JToggleButton submitGameTypeFob;
 	private JTextField submitSports;
-	// public JTextField gameInfo;
 	
 	/**
 	 * Launch the application.
@@ -105,7 +108,10 @@ public class AppUi {
 	 * Create the application.
 	 */
 	public AppUi() {
-		autoSubmit = new AutoSubmit();
+		appLogin = new AppLogin();
+		appCommon = new AppCommon();
+		appSubmitContest = new AppSubmitContest();
+		appCreateContest = new AppCreateContest();
 		actionListener = new AppActionListener();
 		initialize();
 	}
@@ -428,6 +434,7 @@ public class AppUi {
 		submitPanel.add(submitSports);
 		
 		resultText = new JTextField();
+		resultText.setBorder(null);
 		resultText.setBounds(70, 269, 210, 21);
 		resultText.setBackground(Color.WHITE);
 		resultText.setVisible(false);
@@ -438,7 +445,8 @@ public class AppUi {
 		resultText.setColumns(10);
 		submitPanel.add(resultText);
 		
-		JButton submitStopBtn = new JButton("STOP");
+		submitStopBtn = new JButton("STOP");
+		submitStopBtn.setEnabled(false);
 		submitStopBtn.setActionCommand("SUBMITSTOP");
 		submitStopBtn.setForeground(Color.RED);
 		submitStopBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
@@ -447,6 +455,7 @@ public class AppUi {
 		
 		submitOkBtn = new JButton("All SUBMIT");
 		submitOkBtn.setActionCommand("SUBMITOK");
+		submitOkBtn.setEnabled(true);
 		submitOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitOkBtn.setForeground(Color.BLUE);
 		submitOkBtn.setBounds(203, 300, 130, 35);
@@ -460,8 +469,9 @@ public class AppUi {
 		submitRestartButton.setActionCommand("SUBMITRESTART");
 		submitPanel.add(submitRestartButton);
 		
-		JButton submitBackBtn = new JButton("<");
+		submitBackBtn = new JButton("<");
 		submitBackBtn.setForeground(Color.BLACK);
+		submitBackBtn.setEnabled(true);
 		submitBackBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitBackBtn.setActionCommand("SUBMITBACK");
 		submitBackBtn.setBounds(15, 300, 49, 35);
@@ -470,7 +480,7 @@ public class AppUi {
 		GameListRenderer gameListRenderer = new GameListRenderer();
 		
 		DefaultListModel<String> model = new DefaultListModel<String>();
-		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
+		/*model.addElement("LGD vs EDG 06:00 PM 80 Contests");
 		model.addElement("OMG vs IG 08:00 PM 79 Contests");
 		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
 		model.addElement("OMG vs IG 08:00 PM 79 Contests");
@@ -481,7 +491,7 @@ public class AppUi {
 		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
 		model.addElement("OMG vs IG 08:00 PM 79 Contests");
 		model.addElement("LGD vs EDG 06:00 PM 80 Contests");
-		model.addElement("OMG vs IG 08:00 PM 79 Contests");
+		model.addElement("OMG vs IG 08:00 PM 79 Contests");*/
 		
 		JList<String> gameList = new JList<String>(model);
 		gameList.setFocusable(false);
@@ -519,6 +529,7 @@ public class AppUi {
 		}
 		
 	}
+	
 	public class AppActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
@@ -533,11 +544,11 @@ public class AppUi {
 					return;
 				}
 				
-				Boolean loginResult = autoSubmit.loginProcess(email, cnvtPassword);
+				Boolean loginResult = appLogin.loginProcess(email, cnvtPassword);
 				if (loginResult) {
 					System.out.println("==== LOGIN SUCCESS");
-					ArrayList<Object> gameInfos = autoSubmit.getTodaysMatch();
-					System.out.println("==== GAME INFO = "+gameInfos);
+					// ArrayList<Object> gameInfos = appCommon.getTodaysMatch();
+					// System.out.println("==== GAME INFO = "+gameInfos);
 					emailText.setEnabled(false);
 					passwordText.setEnabled(false);
 					loginButton.setEnabled(false);
@@ -545,7 +556,7 @@ public class AppUi {
 					createContestButton.setVisible(true);
 				} else {
 					System.out.println("Login Fail");
-					// autoSubmit.driver.close();
+					// appCommon.driver.close();
 				}
 			} else if ("SUBMITCONTEST".equals(action)) {
 				mainPanel.setVisible(false);
@@ -554,7 +565,9 @@ public class AppUi {
 				System.out.println("==== SUBMIT START");
 				submitProcessAction();
 			} else if ("SUBMITSTOP".equals(action)) {
-				
+				System.out.println("THREAD INTERUPTED");
+				submitStopAction();
+				System.out.println("THREAD INTERUPTED END");
 			} else if ("SUBMITBACK".equals(action)) {
 				mainPanel.setVisible(true);
 				submitPanel.setVisible(false);
@@ -582,13 +595,23 @@ public class AppUi {
 		}
 		
 		private void submitProcessAction() {
-			if (submitOkBtn.isVisible()) {
+			submitStopBtn.setEnabled(true);
+			submitBackBtn.setEnabled(false);
+			submitOkBtn.setEnabled(false);
+			
+			appSubmitContest = new AppSubmitContest();
+			System.out.println("THREAD START");
+			appSubmitContest.setDaemon(true);
+			appSubmitContest.start();
+			System.out.println("THREAD END");
+			
+			/*if (submitOkBtn.isVisible()) {
 				submitOkBtn.setEnabled(false);
 			} else if (submitRestartButton.isVisible()){
 				submitRestartButton.setEnabled(false);			
 			}
 			
-			Boolean processResult = autoSubmit.startSubmitContest();
+			Boolean processResult = appSubmitContest.startSubmitContest();
 			String resultMsg = null;
 			if (processResult) {
 				if (submitRestartButton.isVisible()) {
@@ -614,13 +637,15 @@ public class AppUi {
 				resultText.setForeground(Color.RED);
 			}
 			resultText.setVisible(true);
-			resultText.setText(resultMsg);
+			resultText.setText(resultMsg);*/
 		}
 		
-		public class SubmitProcessAction extends Thread {
-			public void run() {
-				Boolean processResult = autoSubmit.startSubmitContest();
-			}
+		private void submitStopAction() {
+			appSubmitContest.interrupt();
+			
+			submitStopBtn.setEnabled(false);
+			submitBackBtn.setEnabled(true);
+			submitOkBtn.setEnabled(true);
 		}
 		
 		private void getCreateParam() {
@@ -676,7 +701,7 @@ public class AppUi {
 				createParam.put("entriesIdx", Integer.toString(entriesCombo.getSelectedIndex()));
 				createParam.put("count", Integer.toString(count));
 				System.out.println(createParam);
-				Boolean result = autoSubmit.startMakeContest(createParam);
+				Boolean result = appCreateContest.startMakeContest(createParam);
 				if (result) {
 					createErrorMsg.setForeground(Color.BLUE);
 					createErrorMsg.setText("Create Complete");
