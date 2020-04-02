@@ -21,13 +21,13 @@ public class AppCreateContest extends Thread implements CommonData {
 	private Map<String, String> param;
 	private JButton CREATE_BACK_BTN;
 	private JButton CREATE_STOP_BTN;
-	private JButton CREATE_CONTEST_BTN;
+	private JButton CREATE_OK_BTN;
 	
-	public AppCreateContest(Map<String, String> param, JButton createBackBtn, JButton createStopBtn, JButton createContestBtn) {
+	public AppCreateContest(Map<String, String> param, JButton createBackBtn, JButton createStopBtn, JButton createOkBtn) {
 		this.param = param;
 		this.CREATE_BACK_BTN = createBackBtn;
 		this.CREATE_STOP_BTN = createStopBtn;
-		this.CREATE_CONTEST_BTN = createContestBtn;
+		this.CREATE_OK_BTN = createOkBtn;
 	}
 	
 	public void run() {
