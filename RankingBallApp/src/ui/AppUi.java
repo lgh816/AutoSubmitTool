@@ -33,6 +33,8 @@ import javax.swing.DefaultListModel;
 
 import javax.swing.JList;
 import javax.swing.border.LineBorder;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class AppUi {
 
@@ -479,12 +481,12 @@ public class AppUi {
 		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");*/
 		
 		
-		JList<String> gameList = new JList<String>(model);
+		/*JList<String> gameList = new JList<String>(model);
 		gameList.setFocusable(false);
 		gameList.setCellRenderer(gameListRenderer);
 		gameList.setBounds(15, 142, 312, 119);
 		gameList.setFixedCellHeight(20);
-		submitPanel.add(gameList);
+		submitPanel.add(gameList);*/
 		
 		submitCurrency = new JTextField();
 		submitCurrency.setHorizontalAlignment(SwingConstants.CENTER);
@@ -516,6 +518,12 @@ public class AppUi {
 		submitCurrencyPoint.setActionCommand("POINT");
 		submitPanel.add(submitCurrencyPoint);
 		submitCurrencyBtnGroup.add(submitCurrencyPoint);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(15, 150, 312, 111);
+		submitPanel.add(scrollPane);
 		
 		// submitRestartButton.addActionListener(actionListener);
 		createContestBtn.addActionListener(actionListener);
@@ -700,14 +708,4 @@ public class AppUi {
 			currencyBtnGroup.clearSelection();
 		}
 	}
-	
-	/*public void restartSubmit() {
-		System.out.println("====== [ Submit Restart do Click ] ======");
-		submitOkBtn.doClick();
-	}
-	
-	public void restartCreate() {
-		System.out.println("====== [ Create Restart do Click ] ======");
-		createOkBtn.doClick();
-	}*/
 }

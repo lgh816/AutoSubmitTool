@@ -1,8 +1,5 @@
 package service;
 
-import java.io.FileReader;
-import java.util.Properties;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
