@@ -21,7 +21,7 @@ public class AppCommon implements CommonData {
 	
 	public static void getReadProperties() {
 		try {
-			FileReader resource = new FileReader("../../config.properties");
+			FileReader resource = new FileReader("config.properties");
 			Properties properties = new Properties();
 			properties.load(resource);
 			BASE_URL = properties.getProperty("URL");
