@@ -6,6 +6,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public interface CommonData {
 	final String WEB_DRIVER_ID = "webdriver.chrome.driver";
 	final String WEB_DRIVER_PATH = "C:/chromedriver/chromedriver.exe";
-	final String BASE_URL = "https://play.rankingball.com";
+	// final String BASE_URL = "https://play.rankingball.net";
 	final WebDriver DRIVER = new ChromeDriver();
 }

@@ -1,5 +1,8 @@
 package service;
 
+import java.io.FileReader;
+import java.util.Properties;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -15,13 +18,16 @@ public class AppLogin extends AppCommon implements CommonData  {
 
 	public Boolean loginProcess(String email, String password) {
 		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
-		
 		wait = new WebDriverWait(DRIVER, 30);
 		Boolean result = false;
-		
+		AppCommon.getReadProperties();
 		try {
 			DRIVER.manage().window().maximize();
-			DRIVER.get(BASE_URL);
+			if (BASE_URL == null) {
+				
+			} else {
+				DRIVER.get(BASE_URL);
+			}
 	
 			checkPopup();
 			

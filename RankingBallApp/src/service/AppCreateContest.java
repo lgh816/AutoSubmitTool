@@ -1,9 +1,13 @@
 package service;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -12,36 +16,36 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import data.CommonData;
+import ui.AppUi;
 
 public class AppCreateContest extends Thread implements CommonData {
-	// private AppCommon appCommon = new AppCommon();
 	private WebElement webElement;	
 	private WebDriverWait wait = new WebDriverWait(DRIVER, 30);
 	private AppCommon appCommon = new AppCommon();
 	private Map<String, String> param;
+	private String CREATE_SPORTS_ID;
 	private JButton CREATE_BACK_BTN;
 	private JButton CREATE_STOP_BTN;
 	private JButton CREATE_OK_BTN;
+	private JTextField CREATE_RESULT_TEXT;
 	
-	public AppCreateContest(Map<String, String> param, JButton createBackBtn, JButton createStopBtn, JButton createOkBtn) {
+	public AppCreateContest(Map<String, String> param, JTextField createResultText, JButton createBackBtn, JButton createStopBtn, JButton createOkBtn) {
 		this.param = param;
+		this.CREATE_SPORTS_ID = appCommon.getGameId(param.get("sports"));
 		this.CREATE_BACK_BTN = createBackBtn;
 		this.CREATE_STOP_BTN = createStopBtn;
 		this.CREATE_OK_BTN = createOkBtn;
+		this.CREATE_RESULT_TEXT = createResultText;
 	}
 	
 	public void run() {
-		// Boolean result = false;
-		/*{
-			"lol" : "105001",
-			"soccer" : "104001",
-			"basketball" : "104004",
-			"football" : "104003",
-			"baseball" : "104002"
-		}*/
+		String exceptionMsg = null;
 		try {
-			String gameId = null;
-			String gameType = param.get("sports");
+			System.out.println("====== [CREATE] Thread RUN");
+			appCommon.selectSports(CREATE_SPORTS_ID);
+			appCommon.checkPopup();
+			// String gameId = null;
+			// String gameType = param.get("sports");
 			String currency = param.get("currency");
 			String entryFee = param.get("entryFee");
 			String entries = param.get("entries");
@@ -49,10 +53,10 @@ public class AppCreateContest extends Thread implements CommonData {
 			int entriesIdx = Integer.parseInt(param.get("entriesIdx"));
 			int count = Integer.parseInt(param.get("count"));
 			
-			gameId = appCommon.getGameId(gameType);
+			// gameId = appCommon.getGameId(gameType);
 			
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+gameId+"']")));
-			WebElement gameTypeElement = DRIVER.findElement(By.xpath("//*[@id='"+gameId+"']"));
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
+			WebElement gameTypeElement = DRIVER.findElement(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']"));
 			String checkActive = gameTypeElement.getAttribute("class");
 			if (!checkActive.contains("active")) {
 				gameTypeElement.click();
@@ -66,13 +70,13 @@ public class AppCreateContest extends Thread implements CommonData {
 			System.out.println("====== [CREATE] Today's Game Count = "+gameSize);
 			for (int i = 0; i < gameSize; i++) {
 				Boolean backFlag = true;
-				System.out.println("====== [CREATE] [Game Number "+(i+1)+"] ======");
+				
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				String eachGameId = gameElements.get(i).getAttribute("id");
 				String checkJoined = DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
-				System.out.println("CREATE CHECK JOINED = "+checkJoined);
-				if (checkJoined.isEmpty()) {
+				System.out.println("====== [CREATE] CHECK JOINED = "+checkJoined);
+				if (checkJoined.isEmpty()) {  // Check joined or not
 					webElement = DRIVER.findElement(By.id(eachGameId));
 					int eachContentSize = Integer.parseInt(DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
 					System.out.println("====== [CREATE] [Contests Size = "+eachContentSize+"] ======");
@@ -86,7 +90,13 @@ public class AppCreateContest extends Thread implements CommonData {
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
 						List<WebElement> contestElements = DRIVER.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));
 						int contestSize = contestElements.size();
-						
+						String homeTeam = DRIVER.findElement(By.cssSelector("#container .content .game-content .game-info-content .contest-info .t-first")).getText();
+						String awayTeam = DRIVER.findElement(By.cssSelector("#container .content .game-content .game-info-content .contest-info .t-second")).getText();
+						System.out.println("===================================");
+						System.out.println("====== [CREATE] "+homeTeam+" vs " + awayTeam);
+						System.out.println("====== [CREATE] "+contestSize+" CONTESTS");
+						int eachMatch = i + 1;
+						String matchTitle = "[Match "+eachMatch+" / "+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						
@@ -116,10 +126,14 @@ public class AppCreateContest extends Thread implements CommonData {
 										WebElement eachType = DRIVER.findElement(By.xpath("//*[@id='contestType']/li["+childCnt+"]"));
 										eachType.click();
 										setCreateOptions(entryFee, entries, entryFeeIdx, entriesIdx);
+										eachContentSize =  eachContentSize + 1;
 										System.out.println("====== [CREATE] [Create "+(k+1)+"] "+text+" [Fee] "+entryFee+" "+currency+" [Entry] "+entries+"");
 										System.out.println("====== [CREATE] [contestSize] "+eachContentSize+" =====");
-										eachContentSize =  eachContentSize + 1;
+										
+									} else {
+										
 									}
+									
 								}
 								System.out.println("====== [CREATE] [Create "+count+"] "+text+" Complete");
 							} else {
@@ -134,13 +148,45 @@ public class AppCreateContest extends Thread implements CommonData {
 					}
 				}
 			}
-			// return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			String exceptionMsg = e.getMessage();
-			System.out.println("Auto Create Exception Message = "+exceptionMsg);
+			exceptionMsg = e.getMessage();
+			System.out.println("====== [CREATE] Exception Message = "+exceptionMsg);
+		} finally {
+			CREATE_BACK_BTN.setEnabled(true);
+			CREATE_STOP_BTN.setEnabled(false);
+			CREATE_OK_BTN.setEnabled(true);
+			if (exceptionMsg != null) {
+				if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
+					CREATE_RESULT_TEXT.setForeground(Color.RED);
+					System.out.println("====== [CREATE] CLICK STOP BUTTON");
+					CREATE_RESULT_TEXT.setText("Create Stoped");
+				} else if (exceptionMsg.contains("Expected condition failed")) {
+					CREATE_RESULT_TEXT.setForeground(Color.RED);
+					System.out.println("====== [CREATE] OCCUR EXCEPTION");
+					CREATE_RESULT_TEXT.setText("Create Fail. Please Try Again");
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
+					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
+					WebElement sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']"));
+					sportsBtn.click();
+				}
+				appCommon.selectSports(CREATE_SPORTS_ID);
+				
+				/*Timer timer = new Timer();
+				TimerTask timerTask = new TimerTask() {
+					@Override
+					public void run() {
+						AppUi appUi = new AppUi();
+						appUi.restartCreate();
+					}
+				};
+				timer.schedule(timerTask, 5000);*/
+			} else {
+				System.out.println("====== [CREATE] CREATE SUCCESS");
+				CREATE_RESULT_TEXT.setForeground(Color.BLUE);
+				CREATE_RESULT_TEXT.setText("Create Success");
+			}
 		}
-		// return result;
 	}
 	
 	private void setCreateOptions(String entryFee, String entries, int entryFeeIdx, int entriesIdx) {
@@ -162,7 +208,7 @@ public class AppCreateContest extends Thread implements CommonData {
 		} catch (Exception e) {
 			submitProcess();
 			String exceptionMsg = e.getMessage();
-			System.out.println("[setCreateOptions] Exception Message = "+exceptionMsg);
+			System.out.println("====== [CREATE] setCreateOptions Exception Message = "+exceptionMsg);
 		}
 	}
 	
@@ -196,16 +242,15 @@ public class AppCreateContest extends Thread implements CommonData {
 				Thread.sleep(1300);
 				DRIVER.navigate().back();
 			} else {
-				System.out.println("====== [SUBMIT] Entries Not Exist !!!!!!!! ======");
+				System.out.println("====== [CREATE] Entries Not Exist !!!!!!!! ======");
 				DRIVER.navigate().back();
-				// break;
 			}
 			loadButtonElement = null;
 			checkEntries = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			String exceptionMsg = e.getMessage();
-			System.out.println("[submitProcess] Exception Message = "+exceptionMsg);
+			System.out.println("====== [CREATE] submitProcess Exception Message = "+exceptionMsg);
 		}
 	}
 }

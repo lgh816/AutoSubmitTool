@@ -8,7 +8,6 @@ import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
-import service.AppCommon;
 import service.AppCreateContest;
 import service.AppLogin;
 import service.AppSubmitContest;
@@ -19,7 +18,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.Color;
@@ -38,7 +36,6 @@ import javax.swing.border.LineBorder;
 
 public class AppUi {
 
-	private AppCommon appCommon;
 	private AppLogin appLogin;
 	private AppSubmitContest appSubmitContest;
 	private AppCreateContest appCreateContest;
@@ -60,10 +57,9 @@ public class AppUi {
 	private JButton createStopBtn;
 	private JButton createBackBtn;
 	private JButton createOkBtn;
-	// public JButton submitRestartButton;
 	public JButton submitStopBtn;
 	public JButton submitBackBtn;
-	public JTextField resultText;
+	public JTextField submitResultText;
 	private JTextField selectGameType;
 	private ButtonGroup submitSportsBtnGroup;
 	private ButtonGroup submitCurrencyBtnGroup;
@@ -83,7 +79,7 @@ public class AppUi {
 	private JComboBox entryFeeCombo;
 	private JTextField contestCounts;
 	private JTextField txtCount;
-	private JTextField createErrorMsg;
+	private JTextField createResultText;
 	private JToggleButton submitGameTypeLol;
 	private JToggleButton submitGameTypeBaseball;
 	private JToggleButton submitGameTypeSoc;
@@ -113,9 +109,6 @@ public class AppUi {
 	 */
 	public AppUi() {
 		appLogin = new AppLogin();
-		// appCommon = new AppCommon();
-		// appSubmitContest = new AppSubmitContest(null);
-		// appCreateContest = new AppCreateContest(null);
 		actionListener = new AppActionListener();
 		initialize();
 	}
@@ -363,17 +356,17 @@ public class AppUi {
 		createPanel.add(txtCount);
 		txtCount.setColumns(10);
 		
-		createErrorMsg = new JTextField();
-		createErrorMsg.setBorder(null);
-		createErrorMsg.setVisible(false);
-		createErrorMsg.setBackground(Color.WHITE);
-		createErrorMsg.setEditable(false);
-		createErrorMsg.setForeground(Color.RED);
-		createErrorMsg.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		createErrorMsg.setHorizontalAlignment(SwingConstants.CENTER);
-		createErrorMsg.setBounds(15, 270, 311, 21);
-		createPanel.add(createErrorMsg);
-		createErrorMsg.setColumns(10);
+		createResultText = new JTextField();
+		createResultText.setBorder(null);
+		// createResultText.setVisible(false);
+		createResultText.setBackground(Color.WHITE);
+		createResultText.setEditable(false);
+		createResultText.setForeground(Color.RED);
+		createResultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		createResultText.setHorizontalAlignment(SwingConstants.CENTER);
+		createResultText.setBounds(15, 270, 311, 21);
+		createPanel.add(createResultText);
+		createResultText.setColumns(10);
 		
 		// Create Panel End=================================================================================
 		
@@ -437,16 +430,16 @@ public class AppUi {
 		submitSports.setBackground(Color.WHITE);
 		submitPanel.add(submitSports);
 		
-		resultText = new JTextField();
-		resultText.setBorder(null);
-		resultText.setBounds(15, 269, 312, 21);
-		resultText.setBackground(Color.WHITE);
-		resultText.setForeground(Color.BLUE);
-		resultText.setHorizontalAlignment(SwingConstants.CENTER);
-		resultText.setEditable(false);
-		resultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		resultText.setColumns(10);
-		submitPanel.add(resultText);
+		submitResultText = new JTextField();
+		submitResultText.setBorder(null);
+		submitResultText.setBounds(15, 269, 312, 21);
+		submitResultText.setBackground(Color.WHITE);
+		submitResultText.setForeground(Color.BLUE);
+		submitResultText.setHorizontalAlignment(SwingConstants.CENTER);
+		submitResultText.setEditable(false);
+		submitResultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitResultText.setColumns(10);
+		submitPanel.add(submitResultText);
 		
 		submitStopBtn = new JButton("STOP");
 		submitStopBtn.setEnabled(false);
@@ -456,21 +449,13 @@ public class AppUi {
 		submitStopBtn.setBounds(66, 300, 130, 35);
 		submitPanel.add(submitStopBtn);
 		
-		submitOkBtn = new JButton("All SUBMIT");
+		submitOkBtn = new JButton("SUBMIT");
 		submitOkBtn.setActionCommand("SUBMITOK");
 		submitOkBtn.setEnabled(true);
 		submitOkBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitOkBtn.setForeground(Color.BLUE);
 		submitOkBtn.setBounds(199, 300, 130, 35);
 		submitPanel.add(submitOkBtn);
-		
-		/*submitRestartButton = new JButton("RESTART");
-		submitRestartButton.setBounds(203, 300, 130, 35);
-		submitRestartButton.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		submitRestartButton.setVisible(false);
-		submitRestartButton.setForeground(Color.BLUE);
-		submitRestartButton.setActionCommand("SUBMITRESTART");
-		submitPanel.add(submitRestartButton);*/
 		
 		submitBackBtn = new JButton("<");
 		submitBackBtn.setForeground(Color.BLACK);
@@ -550,7 +535,6 @@ public class AppUi {
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-			// TODO Auto-generated method stub
 			System.out.println("RENDERER = "+list);
 			System.out.println("RENDERER = "+value);
 			System.out.println("RENDERER = "+index);
@@ -601,7 +585,7 @@ public class AppUi {
 			} else if ("SUBMITBACK".equals(action)) {
 				mainPanel.setVisible(true);
 				submitPanel.setVisible(false);
-				resultText.setText("");
+				submitResultText.setText("");
 				submitGameTypeLol.setSelected(true);
 				submitCurrencyAll.setSelected(true);
 			} else if ("CREATECONTEST".equals(action)) {
@@ -630,13 +614,13 @@ public class AppUi {
 			String sportsBtn = sportsBtnModel.getActionCommand();
 			String currencyBtn = currencyBtnModel.getActionCommand(); // all, gdc, point
 			
-			resultText.setText("");
-			resultText.setForeground(Color.BLUE);
+			submitResultText.setText("");
+			submitResultText.setForeground(Color.BLUE);
 			submitStopBtn.setEnabled(true);
 			submitBackBtn.setEnabled(false);
 			submitOkBtn.setEnabled(false);
 			
-			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, resultText, submitBackBtn, submitStopBtn, submitOkBtn);
+			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, submitResultText, submitBackBtn, submitStopBtn, submitOkBtn);
 			appSubmitContest.setDaemon(true);
 			appSubmitContest.start();
 		}
@@ -644,8 +628,8 @@ public class AppUi {
 		private void getCreateParam() {
 			String errorMsg = null;
 			Map<String, String> createParam = new HashMap<String, String>();
-			createErrorMsg.setText("");
-			createErrorMsg.setVisible(false);
+			createResultText.setText("");
+			createResultText.setVisible(false);
 			String sportsBtn = null;
 			String currencyBtn = null;
 			String entryFee = null;
@@ -680,13 +664,11 @@ public class AppUi {
 				errorMsg = "Please Select Sports";
 			}
 			
-			createErrorMsg.setVisible(true);
+			createResultText.setVisible(true);
 			if (errorMsg != null) {
-				createErrorMsg.setForeground(Color.RED);
-				createErrorMsg.setText(errorMsg);
+				createResultText.setForeground(Color.RED);
+				createResultText.setText(errorMsg);
 			} else {
-				/*createStopBtn.setEnabled(false);
-				createBackBtn.setEnabled(true);*/
 				createBackBtn.setEnabled(false);
 				createStopBtn.setEnabled(true);
 				createOkBtn.setEnabled(false);
@@ -698,28 +680,15 @@ public class AppUi {
 				createParam.put("entriesIdx", Integer.toString(entriesCombo.getSelectedIndex()));
 				createParam.put("count", Integer.toString(count));
 				System.out.println(createParam);
-				appCreateContest = new AppCreateContest(createParam, createBackBtn, createStopBtn, createOkBtn);
+				appCreateContest = new AppCreateContest(createParam, createResultText, createBackBtn, createStopBtn, createOkBtn);
 				appCreateContest.setDaemon(true);
 				appCreateContest.start();
-				
-				// Boolean result = appCreateContest.startMakeContest(createParam);
-				
-				/*if (result) {
-					createErrorMsg.setForeground(Color.BLUE);
-					createErrorMsg.setText("Create Complete");
-				} else {
-					createErrorMsg.setForeground(Color.RED);
-					createErrorMsg.setText("Create Fail. Please Try Again");
-				}*/
-				
-				/*createStopBtn.setEnabled(true);
-				createBackBtn.setEnabled(false);*/
 			}
 		}
 		
 		private void setCreateParam() {
-			createErrorMsg.setText("");
-			createErrorMsg.setVisible(false);
+			createResultText.setText("");
+			createResultText.setVisible(false);
 			gameTypeLol.setSelected(true);
 			currencyGdc.setSelected(true);
 			entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"25", "50", "100", "250"}));
@@ -731,4 +700,14 @@ public class AppUi {
 			currencyBtnGroup.clearSelection();
 		}
 	}
+	
+	/*public void restartSubmit() {
+		System.out.println("====== [ Submit Restart do Click ] ======");
+		submitOkBtn.doClick();
+	}
+	
+	public void restartCreate() {
+		System.out.println("====== [ Create Restart do Click ] ======");
+		createOkBtn.doClick();
+	}*/
 }
