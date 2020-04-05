@@ -35,7 +35,7 @@ public class AppCommon implements CommonData {
 	
 	public void selectSports(String sportsId) {
 		try {
-			WebElement sportsBtn;
+			WebElement sportsBtn = null;
 			WebDriverWait wait = new WebDriverWait(DRIVER, 5);
 			int btnCheck = DRIVER.findElements(By.xpath("//*[@id='"+sportsId+"']")).size();
 			if (btnCheck > 0) {

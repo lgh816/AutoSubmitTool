@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -49,7 +50,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 			int gameSize = gameElements.size();
 			
 			System.out.println("====== [SUBMIT] Today's Game Count = "+gameSize);
-			
+			SUBMIT_RESULT_TEXT.setText("Check Games......");
 			for (int i = 0; i < gameSize; i++) { // Loop Today Games
 				int totalGdc = 0;
 				int totalPoint = 0;
@@ -58,7 +59,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				String eachGameId = gameElements.get(i).getAttribute("id");
 				String checkJoined = DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
-				System.out.println("===== [SUBMIT]  CHECK JOINED = "+checkJoined);
+				System.out.println("====== [SUBMIT] CHECK JOINED = "+checkJoined);
 				if (checkJoined.isEmpty()) { // Check joined or not
 					webElement = DRIVER.findElement(By.id(eachGameId));
 					webElement.click();
@@ -108,7 +109,14 @@ public class AppSubmitContest extends Thread implements CommonData {
 								if (!"JOINED".equals(joinStatus)) {
 									Thread.sleep(1000);
 									wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".entry-fee")));
-									contestElements.get(j).findElement(By.cssSelector(".entry-fee")).click(); // Click Each Contest
+									WebElement eachContestBtn = contestElements.get(j).findElement(By.cssSelector(".entry-fee"));
+									Actions moveAction = new Actions(DRIVER);
+									moveAction.moveToElement(eachContestBtn);
+									moveAction.perform(); // Move Each Contest Button
+									
+									eachContestBtn.click(); // Click Each Contest
+									
+									// contestElements.get(j).findElement(By.cssSelector(".entry-fee")).click(); // Click Each Contest
 									String popTxt = "";
 									try {
 										popTxt = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[3]/div/div/div/div[2]")).getText();
@@ -172,13 +180,12 @@ public class AppSubmitContest extends Thread implements CommonData {
 						}
 						// =========== Calculate Percent ==================
 						double percent = (double) ( (double)(j+1) / (double)contestSize) * 100;
-						String dispPattern = "0";
-						DecimalFormat form = new DecimalFormat(dispPattern);
+						DecimalFormat form = new DecimalFormat("0");
 						String progressText = matchTitle + " - " + form.format(percent)+"%";
 						SUBMIT_RESULT_TEXT.setText(progressText);
 						System.out.println("====== [SUBMIT] Check Contest "+form.format(percent)+"%");
 						progressText = null;
-						// ==========================================
+						// ================================================
 					}
 
 					System.out.println("====== [SUBMIT] "+totalGdc+" TOTAL GDC");

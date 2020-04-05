@@ -1,6 +1,7 @@
 package service;
 
 import java.awt.Color;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -28,6 +29,7 @@ public class AppCreateContest extends Thread implements CommonData {
 	private JButton CREATE_STOP_BTN;
 	private JButton CREATE_OK_BTN;
 	private JTextField CREATE_RESULT_TEXT;
+	private int CREATE_COUNT;
 	
 	public AppCreateContest(Map<String, String> param, JTextField createResultText, JButton createBackBtn, JButton createStopBtn, JButton createOkBtn) {
 		this.param = param;
@@ -36,6 +38,11 @@ public class AppCreateContest extends Thread implements CommonData {
 		this.CREATE_STOP_BTN = createStopBtn;
 		this.CREATE_OK_BTN = createOkBtn;
 		this.CREATE_RESULT_TEXT = createResultText;
+		try {
+			this.CREATE_COUNT = Integer.parseInt(AppCommon.CREATE_COUNT);
+		} catch (NumberFormatException e) {
+			this.CREATE_COUNT = 100;
+		}
 	}
 	
 	public void run() {
@@ -49,10 +56,15 @@ public class AppCreateContest extends Thread implements CommonData {
 			String currency = param.get("currency");
 			String entryFee = param.get("entryFee");
 			String entries = param.get("entries");
+			String selectedType = param.get("type");
+			
 			int entryFeeIdx = Integer.parseInt(param.get("entryFeeIdx"));
 			int entriesIdx = Integer.parseInt(param.get("entriesIdx"));
 			int count = Integer.parseInt(param.get("count"));
 			
+			System.out.println("====== [CREATE] Create Properties "+CREATE_COUNT);
+			System.out.println("====== [CREATE] Selected Type = "+selectedType);
+			CREATE_RESULT_TEXT.setText("Check Games......");
 			// gameId = appCommon.getGameId(gameType);
 			
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
@@ -80,9 +92,9 @@ public class AppCreateContest extends Thread implements CommonData {
 					webElement = DRIVER.findElement(By.id(eachGameId));
 					int eachContentSize = Integer.parseInt(DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
 					System.out.println("====== [CREATE] [Contests Size = "+eachContentSize+"] ======");
-					if (eachContentSize > 80) {
+					if (eachContentSize > CREATE_COUNT) {
 						backFlag = false;
-						System.out.println("====== [CREATE] [Over 80 Contests] =====");
+						System.out.println("====== [CREATE] [Over "+CREATE_COUNT+" Contests] =====");
 						Thread.sleep(2000);
 					} else {
 						webElement.click(); // Click one game
@@ -113,14 +125,17 @@ public class AppCreateContest extends Thread implements CommonData {
 						currencyBtn.click();
 						List<WebElement> typeArr = DRIVER.findElements(By.xpath("//*[@id='contestType']/li"));
 						int typeSize = typeArr.size();
+						// int totalCount = count * typeSize;
+						
 						for (int j = 0; j < typeSize; j++) {
 							typeArr = DRIVER.findElements(By.xpath("//*[@id='contestType']/li"));
 							int childCnt = j+1;
 							WebElement type = typeArr.get(j);
-							String text = type.getText();
-							if (!"Head-to-Head".equals(text)) {
+							String text = type.getText(); // Tournaments, 50/50, 30/30
+							
+							if (!"Head-to-Head".equals(text) && (selectedType.equals("All") || selectedType.equals(text))) {
 								for (int k = 0; k < count; k ++) {
-									if (eachContentSize < 81) {
+									if (eachContentSize <= CREATE_COUNT) {
 										Thread.sleep(2500);
 										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='contestType']/li["+childCnt+"]")));
 										WebElement eachType = DRIVER.findElement(By.xpath("//*[@id='contestType']/li["+childCnt+"]"));
@@ -128,16 +143,23 @@ public class AppCreateContest extends Thread implements CommonData {
 										setCreateOptions(entryFee, entries, entryFeeIdx, entriesIdx);
 										eachContentSize =  eachContentSize + 1;
 										System.out.println("====== [CREATE] [Create "+(k+1)+"] "+text+" [Fee] "+entryFee+" "+currency+" [Entry] "+entries+"");
-										System.out.println("====== [CREATE] [contestSize] "+eachContentSize+" =====");
+										System.out.println("====== [CREATE] [ContestSize] "+eachContentSize+" =====");
 										
+										// =========== Calculate Percent ==================
+										double percent = (double) ( (double)(k+1) / (double)count) * 100;
+										DecimalFormat form = new DecimalFormat("0");
+										String progressText = matchTitle + " - " + form.format(percent)+"%";
+										CREATE_RESULT_TEXT.setText(progressText);
+										System.out.println("====== [CREATE] Check Contest "+form.format(percent)+"%");
+										progressText = null;
+										// ================================================
 									} else {
-										
+										break;
 									}
-									
 								}
 								System.out.println("====== [CREATE] [Create "+count+"] "+text+" Complete");
-							} else {
-								break;
+							/*} else {
+								break;*/
 							}
 						}
 						DRIVER.navigate().back();

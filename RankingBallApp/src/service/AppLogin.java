@@ -17,14 +17,14 @@ public class AppLogin extends AppCommon implements CommonData  {
 		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
 		wait = new WebDriverWait(DRIVER, 30);
 		Boolean result = false;
-		AppCommon.getReadProperties();
+		// AppCommon.getReadProperties();
+		String url = BASE_URL;
 		try {
 			DRIVER.manage().window().maximize();
 			if (BASE_URL == null) {
-				
-			} else {
-				DRIVER.get(BASE_URL);
+				url = "https://play.rankingball.net/";
 			}
+			DRIVER.get(url);
 	
 			checkPopup();
 			
