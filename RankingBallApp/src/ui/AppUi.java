@@ -192,6 +192,9 @@ public class AppUi {
 		emailText.setBounds(89, 10, 160, 21);
 		mainPanel.add(emailText);
 		emailText.setColumns(10);
+		if (AppCommon.USER_ID != null) {
+			emailText.setText(AppCommon.USER_ID);
+		}
 		
 		passwordText = new JPasswordField();
 		passwordText.setBounds(89, 39, 160, 21);

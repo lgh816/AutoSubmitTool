@@ -1,5 +1,6 @@
 package service;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -12,7 +13,8 @@ public class AppLogin extends AppCommon implements CommonData  {
 	
 	private WebElement webElement;	
 	private WebDriverWait wait;
-
+	// private final Logger logger = Logger.getLogger(AppLogin.class);
+	
 	public Boolean loginProcess(String email, String password) {
 		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
 		wait = new WebDriverWait(DRIVER, 30);

@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -17,6 +18,7 @@ import data.CommonData;
 public class AppCommon implements CommonData {
 	private WebDriverWait wait;
 	public static String BASE_URL;
+	public static String USER_ID;
 	public static String CREATE_COUNT;
 	
 	public static void getReadProperties() {
@@ -25,9 +27,11 @@ public class AppCommon implements CommonData {
 			Properties properties = new Properties();
 			properties.load(resource);
 			BASE_URL = properties.getProperty("URL");
+			USER_ID = properties.getProperty("ID");
 			CREATE_COUNT = properties.getProperty("CREATE");
-			System.out.println("[ConfigFile - URL] = "+BASE_URL);
-			System.out.println("[ConfigFile - CREATE] = "+CREATE_COUNT);
+			System.out.println("[ConfigFile - URL ] = "+BASE_URL);
+			System.out.println("[ConfigFile - ID ] = "+USER_ID);
+			System.out.println("[ConfigFile - CREATE ] = "+CREATE_COUNT);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -35,6 +39,8 @@ public class AppCommon implements CommonData {
 	
 	public void selectSports(String sportsId) {
 		try {
+			Actions moveAction = new Actions(DRIVER);
+			
 			WebElement sportsBtn = null;
 			WebDriverWait wait = new WebDriverWait(DRIVER, 5);
 			int btnCheck = DRIVER.findElements(By.xpath("//*[@id='"+sportsId+"']")).size();
@@ -45,11 +51,17 @@ public class AppCommon implements CommonData {
 				System.out.println("[Select Sports] = "+sportsId);
 			} else {
 				System.out.println("[Select RANKINGBALL Icon]");
-				DRIVER.findElement(By.xpath("//*[@id='container']/div[1]/div/h1/a")).click(); // RANKINGBALL Icon Click on top
+				WebElement rankingballIconBtn = DRIVER.findElement(By.xpath("//*[@id='container']/div[1]/div/h1/a")); 
+				moveAction.moveToElement(rankingballIconBtn);
+				moveAction.perform();
+				rankingballIconBtn.click(); // RANKINGBALL Icon Click on top
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+sportsId+"']")));
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+sportsId+"']")));
 				sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+sportsId+"']"));
 			}
+			moveAction.moveToElement(sportsBtn);
+			moveAction.perform();
+			
 			sportsBtn.click();
 		} catch (Exception e) {
 			String exceptionMsg = e.getMessage();
