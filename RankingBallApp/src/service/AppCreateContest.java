@@ -51,8 +51,7 @@ public class AppCreateContest extends Thread implements CommonData {
 			System.out.println("====== [CREATE] Thread RUN");
 			appCommon.selectSports(CREATE_SPORTS_ID);
 			appCommon.checkPopup();
-			// String gameId = null;
-			// String gameType = param.get("sports");
+
 			String currency = param.get("currency");
 			String entryFee = param.get("entryFee");
 			String entries = param.get("entries");
@@ -65,8 +64,7 @@ public class AppCreateContest extends Thread implements CommonData {
 			System.out.println("====== [CREATE] Create Properties "+CREATE_COUNT);
 			System.out.println("====== [CREATE] Selected Type = "+selectedType);
 			CREATE_RESULT_TEXT.setText("Check Games......");
-			// gameId = appCommon.getGameId(gameType);
-			
+
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
 			WebElement gameTypeElement = DRIVER.findElement(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']"));
 			String checkActive = gameTypeElement.getAttribute("class");
@@ -108,7 +106,7 @@ public class AppCreateContest extends Thread implements CommonData {
 						System.out.println("====== [CREATE] "+homeTeam+" vs " + awayTeam);
 						System.out.println("====== [CREATE] "+contestSize+" CONTESTS");
 						int eachMatch = i + 1;
-						String matchTitle = "[Match "+eachMatch+" / "+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
+						String matchTitle = "[Match "+eachMatch+"/"+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						
@@ -148,7 +146,7 @@ public class AppCreateContest extends Thread implements CommonData {
 										// =========== Calculate Percent ==================
 										double percent = (double) ( (double)(k+1) / (double)count) * 100;
 										DecimalFormat form = new DecimalFormat("0");
-										String progressText = matchTitle + " - " + form.format(percent)+"%";
+										String progressText = matchTitle + " - [" +text+ "] - " + form.format(percent)+"%";
 										CREATE_RESULT_TEXT.setText(progressText);
 										System.out.println("====== [CREATE] Check Contest "+form.format(percent)+"%");
 										progressText = null;
@@ -179,18 +177,13 @@ public class AppCreateContest extends Thread implements CommonData {
 			CREATE_STOP_BTN.setEnabled(false);
 			CREATE_OK_BTN.setEnabled(true);
 			if (exceptionMsg != null) {
+				CREATE_RESULT_TEXT.setForeground(Color.RED);
 				if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
-					CREATE_RESULT_TEXT.setForeground(Color.RED);
 					System.out.println("====== [CREATE] CLICK STOP BUTTON");
 					CREATE_RESULT_TEXT.setText("Create Stoped");
 				} else if (exceptionMsg.contains("Expected condition failed")) {
-					CREATE_RESULT_TEXT.setForeground(Color.RED);
 					System.out.println("====== [CREATE] OCCUR EXCEPTION");
 					CREATE_RESULT_TEXT.setText("Create Fail. Please Try Again");
-					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
-					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
-					WebElement sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']"));
-					sportsBtn.click();
 				}
 				appCommon.selectSports(CREATE_SPORTS_ID);
 				
@@ -226,9 +219,11 @@ public class AppCreateContest extends Thread implements CommonData {
 			WebElement nextBtn = DRIVER.findElement(By.xpath("//*[@id='container']/div[2]/div/div[3]/div/button"));
 			nextBtn.click();
 			
-			submitProcess();
+			appCommon.submitCommonProcess("CREATE");
+			// submitProcess();
 		} catch (Exception e) {
-			submitProcess();
+			appCommon.submitCommonProcess("CREATE");
+			// submitProcess();
 			String exceptionMsg = e.getMessage();
 			System.out.println("====== [CREATE] setCreateOptions Exception Message = "+exceptionMsg);
 		}
@@ -262,17 +257,17 @@ public class AppCreateContest extends Thread implements CommonData {
 				Thread.sleep(800);
 				secondOkButton.click();
 				Thread.sleep(1300);
-				DRIVER.navigate().back();
+				// DRIVER.navigate().back();
 			} else {
 				System.out.println("====== [CREATE] Entries Not Exist !!!!!!!! ======");
-				DRIVER.navigate().back();
 			}
 			loadButtonElement = null;
 			checkEntries = null;
+			DRIVER.navigate().back();
 		} catch (Exception e) {
 			e.printStackTrace();
 			String exceptionMsg = e.getMessage();
-			System.out.println("====== [CREATE] submitProcess Exception Message = "+exceptionMsg);
+			System.out.println("====== [CREATE] SubmitProcess Exception Message = "+exceptionMsg);
 		}
 	}
 }

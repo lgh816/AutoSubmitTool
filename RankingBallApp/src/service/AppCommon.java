@@ -101,6 +101,51 @@ public class AppCommon implements CommonData {
 		}
 	}
 	
+	public void submitCommonProcess(String type) {
+		try {
+			Thread.sleep(1000);
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
+			WebElement loadButtonElement = DRIVER.findElement(By.xpath("//*[@id='load']"));
+			Thread.sleep(800);
+			String checkEntries = loadButtonElement.getAttribute("class");
+			if ("entries on".equals(checkEntries)) {
+				loadButtonElement.click(); // Click 'Load other entires'
+				
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button")));
+				WebElement selectEntryButton = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button"));
+				selectEntryButton.click(); // Click 'Select Entry'
+				
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='submit']")));
+				WebElement submitButton = DRIVER.findElement(By.xpath("//*[@id='submit']"));
+				submitButton.click(); // Click 'Submit'
+				
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
+				WebElement okButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
+				okButton.click();
+				
+				Thread.sleep(800);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
+				Thread.sleep(800);
+				WebElement secondOkButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
+				Thread.sleep(800);
+				secondOkButton.click();
+				
+				Thread.sleep(1300);
+				// DRIVER.navigate().back();
+			} else {
+				System.out.println("====== ["+type+"] Entries Not Exist !!!!!!!! ======");
+			}
+			loadButtonElement = null;
+			checkEntries = null;
+			DRIVER.navigate().back();
+		} catch (Exception e) {
+			e.printStackTrace();
+			String exceptionMsg = e.getMessage();
+			System.out.println("====== ["+type+"] SubmitProcess Exception Message = "+exceptionMsg);
+		}
+	}
+	
 	/*public ArrayList<Object> getTodaysMatch() {
 		wait = new WebDriverWait(DRIVER, 30);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));

@@ -38,6 +38,12 @@ import javax.swing.JList;
 import javax.swing.border.LineBorder;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import java.awt.Label;
+import javax.swing.AbstractListModel;
+import java.awt.Dimension;
+import java.awt.Choice;
+import java.awt.Rectangle;
+import java.awt.ComponentOrientation;
 
 public class AppUi {
 
@@ -92,10 +98,14 @@ public class AppUi {
 	private JToggleButton submitGameTypeSoc;
 	private JToggleButton submitGameTypeBsk;
 	private JToggleButton submitGameTypeFob;
+	private JToggleButton currencyPoint;
 	private JTextField submitSports;
 	private JTextField submitCurrency;
 	private JTextField createLimitText;
 	private JTextField gameType;
+	private JPanel panel;
+	private JList list_1;
+	
 	
 	/**
 	 * Launch the application.
@@ -124,6 +134,10 @@ public class AppUi {
 		AppCommon.getReadProperties();
 		
 		initialize();
+		initMainPanel();
+		initCreatePanel();
+		initSubmitPanel();
+		initActionListener();
 	}
 
 	/**
@@ -145,7 +159,9 @@ public class AppUi {
 		mainTopImg.setIcon(new ImageIcon(img));
 		mainTopImg.setBounds(0, 0, 340, 247);
 		frmRankingBallAuto.getContentPane().add(mainTopImg);
-
+	}
+	
+	private void initMainPanel() {
 		// Main Panel ===================================================================================
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
@@ -215,7 +231,9 @@ public class AppUi {
 		createContestBtn.setActionCommand("CREATECONTEST");
 		
 		// Main Panel End=================================================================================
-		
+	}
+	
+	private void initCreatePanel() {
 		// Create Panel ===================================================================================
 		createPanel = new JPanel();
 		createPanel.setVisible(false);
@@ -296,7 +314,7 @@ public class AppUi {
 		createPanel.add(currencyGdc);
 		currencyBtnGroup.add(currencyGdc);
 		
-		JToggleButton currencyPoint = new JToggleButton("Point");
+		currencyPoint = new JToggleButton("Point");
 		currencyPoint.setActionCommand("point");
 		currencyPoint.setBounds(171, 103, 156, 28);
 		createPanel.add(currencyPoint);
@@ -382,7 +400,7 @@ public class AppUi {
 		createResultText.setForeground(Color.RED);
 		createResultText.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createResultText.setHorizontalAlignment(SwingConstants.CENTER);
-		createResultText.setBounds(15, 270, 311, 21);
+		createResultText.setBounds(0, 270, 342, 21);
 		createPanel.add(createResultText);
 		createResultText.setColumns(10);
 		
@@ -431,9 +449,10 @@ public class AppUi {
 		typeBtnGroup.add(typeThirtyBtn);
 		
 		// Create Panel End=================================================================================
-		
+	}
+	
+	private void initSubmitPanel() {
 		// Submit Panel ===================================================================================
-		
 		submitSportsBtnGroup = new ButtonGroup();
 		submitPanel = new JPanel();
 		submitPanel.setVisible(false);
@@ -585,6 +604,11 @@ public class AppUi {
 		scrollPane.setBounds(15, 150, 312, 111);
 		submitPanel.add(scrollPane);
 		
+		list_1 = new JList();
+		scrollPane.setViewportView(list_1);
+	}
+	
+	private void initActionListener() {
 		// submitRestartButton.addActionListener(actionListener);
 		createContestBtn.addActionListener(actionListener);
 		submitOkBtn.addActionListener(actionListener);
@@ -598,7 +622,6 @@ public class AppUi {
 		submitContestBtn.addActionListener(actionListener);
 		loginButton.addActionListener(actionListener);
 	}
-	
 	class GameListRenderer extends JLabel implements ListCellRenderer<Object> {
 
 		@Override
@@ -741,6 +764,7 @@ public class AppUi {
 				createResultText.setForeground(Color.RED);
 				createResultText.setText(errorMsg);
 			} else {
+				createResultText.setForeground(Color.BLUE);
 				createBackBtn.setEnabled(false);
 				createStopBtn.setEnabled(true);
 				createOkBtn.setEnabled(false);

@@ -73,7 +73,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 					System.out.println("====== [SUBMIT] "+homeTeam+" vs " + awayTeam);
 					System.out.println("====== [SUBMIT] "+contestSize+" CONTESTS");
 					int eachMatch = i + 1;
-					String matchTitle = "[Match "+eachMatch+" / "+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
+					String matchTitle = "[Match "+eachMatch+"/"+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
 					System.out.println(matchTitle);
 					for (int j = 0 ; j < contestSize; j++) {
 						Thread.sleep(1000);
@@ -134,7 +134,10 @@ public class AppSubmitContest extends Thread implements CommonData {
 									} else {
 										// WebElement loadButtonElement = new WebDriverWait(DRIVER, 20).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
 										// wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='load']"))); // presenceOfElementLocated <-> visibilityOfElementLocated
-										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
+										
+										appCommon.submitCommonProcess("SUBMIT");
+										
+										/*wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
 										wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
 										WebElement loadButtonElement = DRIVER.findElement(By.xpath("//*[@id='load']"));
 										Thread.sleep(1000);
@@ -160,14 +163,13 @@ public class AppSubmitContest extends Thread implements CommonData {
 											Thread.sleep(1000);
 											secondOkButton.click();
 											Thread.sleep(1300);
-											DRIVER.navigate().back();
+											// DRIVER.navigate().back();
 										} else {
 											System.out.println("====== [SUBMIT] Entries Not Exist !!!!!!!! ========");
-											DRIVER.navigate().back();
-											// break;
 										}
 										loadButtonElement = null;
 										checkEntries = null;
+										DRIVER.navigate().back();*/
 									}
 								} else if ("JOINED".equals(joinStatus)) {
 									if ("asset-121015".equals(kindOfFee)) { // GDC
@@ -206,18 +208,13 @@ public class AppSubmitContest extends Thread implements CommonData {
 			SUBMIT_STOP_BTN.setEnabled(false);
 			SUBMIT_OK_BTN.setEnabled(true);
 			if (exceptionMsg != null) {
+				SUBMIT_RESULT_TEXT.setForeground(Color.RED);
 				if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
-					SUBMIT_RESULT_TEXT.setForeground(Color.RED);
 					System.out.println("====== [SUBMIT] CLICK STOP BUTTON");
 					SUBMIT_RESULT_TEXT.setText("Submit Stoped");
 				} else if (exceptionMsg.contains("Expected condition failed")) {
-					SUBMIT_RESULT_TEXT.setForeground(Color.RED);
 					System.out.println("====== [SUBMIT] OCCUR EXCEPTION");
 					SUBMIT_RESULT_TEXT.setText("Submit Fail. Please Try Again");
-					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+SUBMIT_SPORTS_ID+"']")));
-					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+SUBMIT_SPORTS_ID+"']")));
-					WebElement sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+SUBMIT_SPORTS_ID+"']"));
-					sportsBtn.click();
 				}
 				appCommon.selectSports(SUBMIT_SPORTS_ID);
 				
