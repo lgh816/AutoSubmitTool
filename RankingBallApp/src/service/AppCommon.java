@@ -16,10 +16,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import data.CommonData;
 
 public class AppCommon implements CommonData {
-	private WebDriverWait wait;
 	public static String BASE_URL;
 	public static String USER_ID;
-	public static String CREATE_COUNT;
+	public static int CREATE_COUNT;
 	
 	public static void getReadProperties() {
 		try {
@@ -28,7 +27,12 @@ public class AppCommon implements CommonData {
 			properties.load(resource);
 			BASE_URL = properties.getProperty("URL");
 			USER_ID = properties.getProperty("ID");
-			CREATE_COUNT = properties.getProperty("CREATE");
+			try {
+				CREATE_COUNT = Integer.parseInt(properties.getProperty("CREATE"));
+			} catch (NumberFormatException e) {
+				System.out.println("[ConfigFile - CREATE ] Invalid value in CREATE");
+				CREATE_COUNT = 100;
+			}
 			System.out.println("[ConfigFile - URL ] = "+BASE_URL);
 			System.out.println("[ConfigFile - ID ] = "+USER_ID);
 			System.out.println("[ConfigFile - CREATE ] = "+CREATE_COUNT);
@@ -103,6 +107,7 @@ public class AppCommon implements CommonData {
 	
 	public void submitCommonProcess(String type) {
 		try {
+			WebDriverWait wait = new WebDriverWait(DRIVER, 20);
 			Thread.sleep(1000);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));

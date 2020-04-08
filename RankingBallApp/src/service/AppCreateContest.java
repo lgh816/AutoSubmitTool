@@ -38,11 +38,7 @@ public class AppCreateContest extends Thread implements CommonData {
 		this.CREATE_STOP_BTN = createStopBtn;
 		this.CREATE_OK_BTN = createOkBtn;
 		this.CREATE_RESULT_TEXT = createResultText;
-		try {
-			this.CREATE_COUNT = Integer.parseInt(AppCommon.CREATE_COUNT);
-		} catch (NumberFormatException e) {
-			this.CREATE_COUNT = 100;
-		}
+		this.CREATE_COUNT = AppCommon.CREATE_COUNT;
 	}
 	
 	public void run() {
@@ -110,7 +106,6 @@ public class AppCreateContest extends Thread implements CommonData {
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						
-						// wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("layer-bg loading-bg")));
 						WebElement createBtnElement = DRIVER.findElement(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a"));
 						Thread.sleep(5000);
 						createBtnElement.click(); // Click 'Create Contest' button
@@ -123,7 +118,6 @@ public class AppCreateContest extends Thread implements CommonData {
 						currencyBtn.click();
 						List<WebElement> typeArr = DRIVER.findElements(By.xpath("//*[@id='contestType']/li"));
 						int typeSize = typeArr.size();
-						// int totalCount = count * typeSize;
 						
 						for (int j = 0; j < typeSize; j++) {
 							typeArr = DRIVER.findElements(By.xpath("//*[@id='contestType']/li"));
@@ -143,10 +137,16 @@ public class AppCreateContest extends Thread implements CommonData {
 										System.out.println("====== [CREATE] [Create "+(k+1)+"] "+text+" [Fee] "+entryFee+" "+currency+" [Entry] "+entries+"");
 										System.out.println("====== [CREATE] [ContestSize] "+eachContentSize+" =====");
 										
-										// =========== Calculate Percent ==================
+										// ================= Calculate Percent ===================
 										double percent = (double) ( (double)(k+1) / (double)count) * 100;
 										DecimalFormat form = new DecimalFormat("0");
-										String progressText = matchTitle + " - [" +text+ "] - " + form.format(percent)+"%";
+										String cnvtText = null;
+										if (text == "Tournaments") {
+											cnvtText = "TNMT";
+										} else {
+											cnvtText = text;
+										}
+										String progressText = matchTitle + " - [" +cnvtText+ "] - " + form.format(percent)+"%";
 										CREATE_RESULT_TEXT.setText(progressText);
 										System.out.println("====== [CREATE] Check Contest "+form.format(percent)+"%");
 										progressText = null;
@@ -156,8 +156,6 @@ public class AppCreateContest extends Thread implements CommonData {
 									}
 								}
 								System.out.println("====== [CREATE] [Create "+count+"] "+text+" Complete");
-							/*} else {
-								break;*/
 							}
 						}
 						DRIVER.navigate().back();
@@ -220,54 +218,10 @@ public class AppCreateContest extends Thread implements CommonData {
 			nextBtn.click();
 			
 			appCommon.submitCommonProcess("CREATE");
-			// submitProcess();
 		} catch (Exception e) {
 			appCommon.submitCommonProcess("CREATE");
-			// submitProcess();
 			String exceptionMsg = e.getMessage();
 			System.out.println("====== [CREATE] setCreateOptions Exception Message = "+exceptionMsg);
-		}
-	}
-	
-	private void submitProcess() {
-		try {
-			Thread.sleep(1000);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='load']")));
-			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='load']")));
-			WebElement loadButtonElement = DRIVER.findElement(By.xpath("//*[@id='load']"));
-			Thread.sleep(800);
-			String checkEntries = loadButtonElement.getAttribute("class");
-			if ("entries on".equals(checkEntries)) {
-				loadButtonElement.click();
-				// Thread.sleep(1500);
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button")));
-				WebElement selectEntryButton = DRIVER.findElement(By.xpath("//*[@id='wrab']/div[4]/div/div[2]/footer/button"));
-				selectEntryButton.click();
-				// Thread.sleep(1500);
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='submit']")));
-				WebElement submitButton = DRIVER.findElement(By.xpath("//*[@id='submit']"));
-				submitButton.click();
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
-				WebElement okButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
-				okButton.click();
-				Thread.sleep(800);
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".message-layer #submit")));
-				Thread.sleep(800);
-				WebElement secondOkButton = DRIVER.findElement(By.cssSelector(".message-layer #submit"));
-				Thread.sleep(800);
-				secondOkButton.click();
-				Thread.sleep(1300);
-				// DRIVER.navigate().back();
-			} else {
-				System.out.println("====== [CREATE] Entries Not Exist !!!!!!!! ======");
-			}
-			loadButtonElement = null;
-			checkEntries = null;
-			DRIVER.navigate().back();
-		} catch (Exception e) {
-			e.printStackTrace();
-			String exceptionMsg = e.getMessage();
-			System.out.println("====== [CREATE] SubmitProcess Exception Message = "+exceptionMsg);
 		}
 	}
 }

@@ -21,34 +21,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Toolkit;
 import javax.swing.JPasswordField;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
-import javax.swing.ListCellRenderer;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 
 import javax.swing.JList;
-import javax.swing.border.LineBorder;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import java.awt.Label;
-import javax.swing.AbstractListModel;
-import java.awt.Dimension;
-import java.awt.Choice;
-import java.awt.Rectangle;
-import java.awt.ComponentOrientation;
 
 public class AppUi {
 
 	private AppLogin appLogin;
-	// private AppCommon appCommon;
 	private AppSubmitContest appSubmitContest;
 	private AppCreateContest appCreateContest;
 	public AppActionListener actionListener;
@@ -61,7 +49,7 @@ public class AppUi {
 	private JTextField emailLable;
 	private JTextField passwordLabel;
 	private JTextField emailText;
-	private JButton loginButton;
+	private JButton loginBtn;
 	private JPasswordField passwordText;
 	public JButton submitOkBtn;
 	private JButton submitContestBtn;
@@ -72,40 +60,42 @@ public class AppUi {
 	public JButton submitStopBtn;
 	public JButton submitBackBtn;
 	public JTextField submitResultText;
-	private JTextField selectGameType;
+	private JTextField selectSportsType;
 	private ButtonGroup submitSportsBtnGroup;
 	private ButtonGroup submitCurrencyBtnGroup;
-	private ButtonGroup sportsBtnGroup;
+	private ButtonGroup createSportsBtnGroup;
 	private ButtonGroup currencyBtnGroup;
-	private ButtonGroup typeBtnGroup;
+	private ButtonGroup submitTypeBtnGroup;
+	private ButtonGroup createTypeBtnGroup;
 	private JTextField txtCurrency;
 	private JTextField txtEntryfee;
 	private JTextField txtEntries;
 	private JToggleButton submitCurrencyAll;
-	private JToggleButton gameTypeLol;
-	private JToggleButton gameTypeBaseball;
-	private JToggleButton gameTypeSoc;
-	private JToggleButton gameTypeBsk;
-	private JToggleButton gameTypeFob;
 	private JToggleButton currencyGdc;
 	private JComboBox entriesCombo;
 	private JComboBox entryFeeCombo;
 	private JTextField contestCounts;
 	private JTextField txtCount;
 	private JTextField createResultText;
-	private JToggleButton submitGameTypeLol;
-	private JToggleButton submitGameTypeBaseball;
-	private JToggleButton submitGameTypeSoc;
-	private JToggleButton submitGameTypeBsk;
-	private JToggleButton submitGameTypeFob;
+	
+	private JToggleButton submitSportsTypeLol;
+	private JToggleButton submitSportsTypeBaseball;
+	private JToggleButton submitSportsTypeSoc;
+	private JToggleButton submitSportsTypeBsk;
+	private JToggleButton submitSportsTypeFob;
+	
+	private JToggleButton createSportsTypeLol;
+	private JToggleButton createSportsTypeBaseball;
+	private JToggleButton createSportsTypeSoc;
+	private JToggleButton createSportsTypeBsk;
+	private JToggleButton createSportsTypeFob;
+	
 	private JToggleButton currencyPoint;
 	private JTextField submitSports;
 	private JTextField submitCurrency;
+	private JTextField submitGameType;
 	private JTextField createLimitText;
-	private JTextField gameType;
-	private JPanel panel;
-	private JList list_1;
-	
+	private JTextField createGameType;
 	
 	/**
 	 * Launch the application.
@@ -197,12 +187,12 @@ public class AppUi {
 		passwordLabel.setText("Password");
 		passwordLabel.setColumns(10);
 		
-		loginButton = new JButton("LOGIN");
-		loginButton.setBounds(260, 9, 70, 52);
-		mainPanel.add(loginButton);
-		loginButton.setFocusable(false);
-		loginButton.setActionCommand("LOGIN");
-		loginButton.setFont(new Font("±¼¸²", Font.BOLD, 10));
+		loginBtn = new JButton("LOGIN");
+		loginBtn.setBounds(260, 9, 70, 52);
+		mainPanel.add(loginBtn);
+		loginBtn.setFocusable(false);
+		loginBtn.setActionCommand("LOGIN");
+		loginBtn.setFont(new Font("±¼¸²", Font.BOLD, 10));
 		
 		emailText = new JTextField();
 		emailText.setBounds(89, 10, 160, 21);
@@ -215,6 +205,13 @@ public class AppUi {
 		passwordText = new JPasswordField();
 		passwordText.setBounds(89, 39, 160, 21);
 		mainPanel.add(passwordText);
+		passwordText.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					loginBtn.doClick();
+				}
+			}
+		});
 		
 		submitContestBtn = new JButton("SUBMIT");
 		submitContestBtn.setBounds(12, 92, 155, 44);
@@ -242,59 +239,59 @@ public class AppUi {
 		frmRankingBallAuto.getContentPane().add(createPanel);
 		createPanel.setLayout(null);
 		
-		sportsBtnGroup = new ButtonGroup();
+		createSportsBtnGroup = new ButtonGroup();
 		currencyBtnGroup = new ButtonGroup();
-		typeBtnGroup = new ButtonGroup();
+		createTypeBtnGroup = new ButtonGroup();
 		
-		gameTypeLol = new JToggleButton("League Of Legends");
-		gameTypeLol.setSelected(true);
-		gameTypeLol.setActionCommand("lol");
-		gameTypeLol.setName("lol");
-		gameTypeLol.setBounds(15, 22, 155, 28);
-		createPanel.add(gameTypeLol);
-		sportsBtnGroup.add(gameTypeLol);
+		createSportsTypeLol = new JToggleButton("League Of Legends");
+		createSportsTypeLol.setSelected(true);
+		createSportsTypeLol.setActionCommand("lol");
+		createSportsTypeLol.setName("lol");
+		createSportsTypeLol.setBounds(15, 22, 155, 28);
+		createPanel.add(createSportsTypeLol);
+		createSportsBtnGroup.add(createSportsTypeLol);
 		
-		gameTypeBaseball = new JToggleButton("Baseball");
-		gameTypeBaseball.setActionCommand("baseball");
-		gameTypeBaseball.setName("baseball");
-		gameTypeBaseball.setEnabled(false);
-		gameTypeBaseball.setBounds(172, 22, 155, 28);
-		createPanel.add(gameTypeBaseball);
-		sportsBtnGroup.add(gameTypeBaseball);
+		createSportsTypeBaseball = new JToggleButton("Baseball");
+		createSportsTypeBaseball.setActionCommand("baseball");
+		createSportsTypeBaseball.setName("baseball");
+		createSportsTypeBaseball.setEnabled(false);
+		createSportsTypeBaseball.setBounds(172, 22, 155, 28);
+		createPanel.add(createSportsTypeBaseball);
+		createSportsBtnGroup.add(createSportsTypeBaseball);
 		
-		gameTypeSoc = new JToggleButton("Soccer");
-		gameTypeSoc.setActionCommand("soccer");
-		gameTypeSoc.setName("soccer");
-		gameTypeSoc.setEnabled(false);
-		gameTypeSoc.setBounds(15, 53, 101, 28);
-		createPanel.add(gameTypeSoc);
-		sportsBtnGroup.add(gameTypeSoc);
+		createSportsTypeSoc = new JToggleButton("Soccer");
+		createSportsTypeSoc.setActionCommand("soccer");
+		createSportsTypeSoc.setName("soccer");
+		createSportsTypeSoc.setEnabled(false);
+		createSportsTypeSoc.setBounds(15, 53, 101, 28);
+		createPanel.add(createSportsTypeSoc);
+		createSportsBtnGroup.add(createSportsTypeSoc);
 		
-		gameTypeBsk = new JToggleButton("Basketball");
-		gameTypeBsk.setActionCommand("basketball");
-		gameTypeBsk.setName("basketball");
-		gameTypeBsk.setEnabled(false);
-		gameTypeBsk.setBounds(226, 53, 101, 28);
-		createPanel.add(gameTypeBsk);
-		sportsBtnGroup.add(gameTypeBsk);
+		createSportsTypeBsk = new JToggleButton("Basketball");
+		createSportsTypeBsk.setActionCommand("basketball");
+		createSportsTypeBsk.setName("basketball");
+		createSportsTypeBsk.setEnabled(false);
+		createSportsTypeBsk.setBounds(226, 53, 101, 28);
+		createPanel.add(createSportsTypeBsk);
+		createSportsBtnGroup.add(createSportsTypeBsk);
 		
-		gameTypeFob = new JToggleButton("Football");
-		gameTypeFob.setActionCommand("football");
-		gameTypeFob.setName("football");
-		gameTypeFob.setEnabled(false);
-		gameTypeFob.setBounds(120, 53, 102, 28);
-		createPanel.add(gameTypeFob);
-		sportsBtnGroup.add(gameTypeFob);
+		createSportsTypeFob = new JToggleButton("Football");
+		createSportsTypeFob.setActionCommand("football");
+		createSportsTypeFob.setName("football");
+		createSportsTypeFob.setEnabled(false);
+		createSportsTypeFob.setBounds(120, 53, 102, 28);
+		createPanel.add(createSportsTypeFob);
+		createSportsBtnGroup.add(createSportsTypeFob);
 		
-		selectGameType = new JTextField();
-		selectGameType.setBackground(Color.WHITE);
-		selectGameType.setEditable(false);
-		selectGameType.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		selectGameType.setBorder(null);
-		selectGameType.setText("Sports");
-		selectGameType.setBounds(146, 0, 49, 21);
-		createPanel.add(selectGameType);
-		selectGameType.setColumns(10);
+		selectSportsType = new JTextField();
+		selectSportsType.setBackground(Color.WHITE);
+		selectSportsType.setEditable(false);
+		selectSportsType.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		selectSportsType.setBorder(null);
+		selectSportsType.setText("Sports");
+		selectSportsType.setBounds(146, 0, 49, 21);
+		createPanel.add(selectSportsType);
+		selectSportsType.setColumns(10);
 		
 		txtCurrency = new JTextField();
 		txtCurrency.setHorizontalAlignment(SwingConstants.CENTER);
@@ -412,41 +409,41 @@ public class AppUi {
 		createPanel.add(createLimitText);
 		createLimitText.setColumns(10);
 		
-		gameType = new JTextField();
-		gameType.setHorizontalAlignment(SwingConstants.CENTER);
-		gameType.setText("Type");
-		gameType.setFont(new Font("±¼¸²", Font.BOLD, 12));
-		gameType.setEditable(false);
-		gameType.setColumns(10);
-		gameType.setBorder(null);
-		gameType.setBackground(Color.WHITE);
-		gameType.setBounds(135, 188, 69, 21);
-		createPanel.add(gameType);
+		createGameType = new JTextField();
+		createGameType.setHorizontalAlignment(SwingConstants.CENTER);
+		createGameType.setText("Type");
+		createGameType.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		createGameType.setEditable(false);
+		createGameType.setColumns(10);
+		createGameType.setBorder(null);
+		createGameType.setBackground(Color.WHITE);
+		createGameType.setBounds(135, 188, 69, 21);
+		createPanel.add(createGameType);
 		
 		JToggleButton typeAllBtn = new JToggleButton("All");
 		typeAllBtn.setActionCommand("All");
 		typeAllBtn.setSelected(true);
 		typeAllBtn.setBounds(15, 209, 77, 28);
 		createPanel.add(typeAllBtn);
-		typeBtnGroup.add(typeAllBtn);
+		createTypeBtnGroup.add(typeAllBtn);
 		
 		JToggleButton typeTnmtBtn = new JToggleButton("TNMT");
 		typeTnmtBtn.setActionCommand("Tournaments");
 		typeTnmtBtn.setBounds(94, 209, 77, 28);
 		createPanel.add(typeTnmtBtn);
-		typeBtnGroup.add(typeTnmtBtn);
+		createTypeBtnGroup.add(typeTnmtBtn);
 		
 		JToggleButton typeFiftyBtn = new JToggleButton("50/50");
 		typeFiftyBtn.setActionCommand("50/50");
 		typeFiftyBtn.setBounds(172, 209, 77, 28);
 		createPanel.add(typeFiftyBtn);
-		typeBtnGroup.add(typeFiftyBtn);
+		createTypeBtnGroup.add(typeFiftyBtn);
 		
 		JToggleButton typeThirtyBtn = new JToggleButton("30/30");
 		typeThirtyBtn.setActionCommand("30/30");
 		typeThirtyBtn.setBounds(251, 209, 77, 28);
 		createPanel.add(typeThirtyBtn);
-		typeBtnGroup.add(typeThirtyBtn);
+		createTypeBtnGroup.add(typeThirtyBtn);
 		
 		// Create Panel End=================================================================================
 	}
@@ -454,6 +451,9 @@ public class AppUi {
 	private void initSubmitPanel() {
 		// Submit Panel ===================================================================================
 		submitSportsBtnGroup = new ButtonGroup();
+		submitCurrencyBtnGroup = new ButtonGroup();
+		submitTypeBtnGroup = new ButtonGroup();
+		
 		submitPanel = new JPanel();
 		submitPanel.setVisible(false);
 		submitPanel.setBounds(0, 257, 342, 351);
@@ -461,45 +461,45 @@ public class AppUi {
 		frmRankingBallAuto.getContentPane().add(submitPanel);
 		submitPanel.setLayout(null);
 		
-		submitGameTypeLol = new JToggleButton("League Of Legends");
-		submitGameTypeLol.setSelected(true);
-		submitGameTypeLol.setName("lol");
-		submitGameTypeLol.setActionCommand("lol");
-		submitGameTypeLol.setBounds(15, 22, 155, 28);
-		submitPanel.add(submitGameTypeLol);
-		submitSportsBtnGroup.add(submitGameTypeLol);
+		submitSportsTypeLol = new JToggleButton("League Of Legends");
+		submitSportsTypeLol.setSelected(true);
+		submitSportsTypeLol.setName("lol");
+		submitSportsTypeLol.setActionCommand("lol");
+		submitSportsTypeLol.setBounds(15, 22, 155, 28);
+		submitPanel.add(submitSportsTypeLol);
+		submitSportsBtnGroup.add(submitSportsTypeLol);
 		
-		submitGameTypeBaseball = new JToggleButton("Baseball");
-		submitGameTypeBaseball.setName("baseball");
-		submitGameTypeBaseball.setEnabled(false);
-		submitGameTypeBaseball.setActionCommand("submitBaseball");
-		submitGameTypeBaseball.setBounds(172, 22, 155, 28);
-		submitPanel.add(submitGameTypeBaseball);
-		submitSportsBtnGroup.add(submitGameTypeBaseball);
+		submitSportsTypeBaseball = new JToggleButton("Baseball");
+		submitSportsTypeBaseball.setName("baseball");
+		submitSportsTypeBaseball.setEnabled(false);
+		submitSportsTypeBaseball.setActionCommand("submitBaseball");
+		submitSportsTypeBaseball.setBounds(172, 22, 155, 28);
+		submitPanel.add(submitSportsTypeBaseball);
+		submitSportsBtnGroup.add(submitSportsTypeBaseball);
 		
-		submitGameTypeSoc = new JToggleButton("Soccer");
-		submitGameTypeSoc.setName("soccer");
-		submitGameTypeSoc.setEnabled(false);
-		submitGameTypeSoc.setActionCommand("submitSoccer");
-		submitGameTypeSoc.setBounds(15, 53, 101, 28);
-		submitPanel.add(submitGameTypeSoc);
-		submitSportsBtnGroup.add(submitGameTypeSoc);
+		submitSportsTypeSoc = new JToggleButton("Soccer");
+		submitSportsTypeSoc.setName("soccer");
+		submitSportsTypeSoc.setEnabled(false);
+		submitSportsTypeSoc.setActionCommand("submitSoccer");
+		submitSportsTypeSoc.setBounds(15, 53, 101, 28);
+		submitPanel.add(submitSportsTypeSoc);
+		submitSportsBtnGroup.add(submitSportsTypeSoc);
 		
-		submitGameTypeBsk = new JToggleButton("Basketball");
-		submitGameTypeBsk.setName("basketball");
-		submitGameTypeBsk.setEnabled(false);
-		submitGameTypeBsk.setActionCommand("submitBasketball");
-		submitGameTypeBsk.setBounds(226, 53, 101, 28);
-		submitPanel.add(submitGameTypeBsk);
-		submitSportsBtnGroup.add(submitGameTypeBsk);
+		submitSportsTypeBsk = new JToggleButton("Basketball");
+		submitSportsTypeBsk.setName("basketball");
+		submitSportsTypeBsk.setEnabled(false);
+		submitSportsTypeBsk.setActionCommand("submitBasketball");
+		submitSportsTypeBsk.setBounds(226, 53, 101, 28);
+		submitPanel.add(submitSportsTypeBsk);
+		submitSportsBtnGroup.add(submitSportsTypeBsk);
 		
-		submitGameTypeFob = new JToggleButton("Football");
-		submitGameTypeFob.setName("football");
-		submitGameTypeFob.setEnabled(false);
-		submitGameTypeFob.setActionCommand("submitFootball");
-		submitGameTypeFob.setBounds(120, 53, 102, 28);
-		submitPanel.add(submitGameTypeFob);
-		submitSportsBtnGroup.add(submitGameTypeFob);
+		submitSportsTypeFob = new JToggleButton("Football");
+		submitSportsTypeFob.setName("football");
+		submitSportsTypeFob.setEnabled(false);
+		submitSportsTypeFob.setActionCommand("submitFootball");
+		submitSportsTypeFob.setBounds(120, 53, 102, 28);
+		submitPanel.add(submitSportsTypeFob);
+		submitSportsBtnGroup.add(submitSportsTypeFob);
 		
 		submitSports = new JTextField();
 		submitSports.setBounds(146, 0, 49, 21);
@@ -546,27 +546,6 @@ public class AppUi {
 		submitBackBtn.setBounds(13, 300, 49, 35);
 		submitPanel.add(submitBackBtn);
 		
-		GameListRenderer gameListRenderer = new GameListRenderer();
-		
-		DefaultListModel<String> model = new DefaultListModel<String>();
-		/*model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
-		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");*/
-		
-		
-		/*JList<String> gameList = new JList<String>(model);
-		gameList.setFocusable(false);
-		gameList.setCellRenderer(gameListRenderer);
-		gameList.setBounds(15, 142, 312, 119);
-		gameList.setFixedCellHeight(20);
-		submitPanel.add(gameList);*/
-		
 		submitCurrency = new JTextField();
 		submitCurrency.setHorizontalAlignment(SwingConstants.CENTER);
 		submitCurrency.setText("Currency");
@@ -578,7 +557,6 @@ public class AppUi {
 		submitCurrency.setBounds(138, 86, 68, 21);
 		submitPanel.add(submitCurrency);
 		
-		submitCurrencyBtnGroup = new ButtonGroup();
 		submitCurrencyAll = new JToggleButton("All");
 		submitCurrencyAll.setSelected(true);
 		submitCurrencyAll.setBounds(15, 109, 101, 28);
@@ -598,18 +576,73 @@ public class AppUi {
 		submitPanel.add(submitCurrencyPoint);
 		submitCurrencyBtnGroup.add(submitCurrencyPoint);
 		
-		JScrollPane scrollPane = new JScrollPane();
+		submitGameType = new JTextField();
+		submitGameType.setHorizontalAlignment(SwingConstants.CENTER);
+		submitGameType.setText("Type");
+		submitGameType.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		submitGameType.setEditable(false);
+		submitGameType.setColumns(10);
+		submitGameType.setBorder(null);
+		submitGameType.setBackground(Color.WHITE);
+		submitGameType.setBounds(135, 142, 69, 21);
+		submitPanel.add(submitGameType);
+		
+		JToggleButton submitTypeAllBtn = new JToggleButton("All");
+		submitTypeAllBtn.setActionCommand("All");
+		submitTypeAllBtn.setSelected(true);
+		submitTypeAllBtn.setBounds(15, 164, 77, 28);
+		submitPanel.add(submitTypeAllBtn);
+		submitTypeBtnGroup.add(submitTypeAllBtn);
+		
+		JToggleButton submitTypeTnmtBtn = new JToggleButton("TNMT");
+		submitTypeTnmtBtn.setActionCommand("tnmt");
+		submitTypeTnmtBtn.setBounds(94, 164, 77, 28);
+		submitPanel.add(submitTypeTnmtBtn);
+		submitTypeBtnGroup.add(submitTypeTnmtBtn);
+		
+		JToggleButton submitTypeFiftyBtn = new JToggleButton("50/50");
+		submitTypeFiftyBtn.setActionCommand("ct50");
+		submitTypeFiftyBtn.setBounds(172, 164, 77, 28);
+		submitPanel.add(submitTypeFiftyBtn);
+		submitTypeBtnGroup.add(submitTypeFiftyBtn);
+		
+		JToggleButton submitTypeThirtyBtn = new JToggleButton("30/30");
+		submitTypeThirtyBtn.setActionCommand("ct30");
+		submitTypeThirtyBtn.setBounds(251, 164, 77, 28);
+		submitPanel.add(submitTypeThirtyBtn);
+		submitTypeBtnGroup.add(submitTypeThirtyBtn);
+		
+		/*JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBounds(15, 150, 312, 111);
 		submitPanel.add(scrollPane);
 		
 		list_1 = new JList();
-		scrollPane.setViewportView(list_1);
+		scrollPane.setViewportView(list_1);*/
+		
+		/*GameListRenderer gameListRenderer = new GameListRenderer();
+		
+		DefaultListModel<String> model = new DefaultListModel<String>();
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");
+		model.addElement("LGD vs EDG 06:00 PM 80 TEST-TEXT");*/
+		
+		/*JList<String> gameList = new JList<String>(model);
+		gameList.setFocusable(false);
+		gameList.setCellRenderer(gameListRenderer);
+		gameList.setBounds(15, 142, 312, 119);
+		gameList.setFixedCellHeight(20);
+		submitPanel.add(gameList);*/
 	}
 	
 	private void initActionListener() {
-		// submitRestartButton.addActionListener(actionListener);
 		createContestBtn.addActionListener(actionListener);
 		submitOkBtn.addActionListener(actionListener);
 		submitStopBtn.addActionListener(actionListener);
@@ -620,10 +653,9 @@ public class AppUi {
 		currencyGdc.addActionListener(actionListener);
 		currencyPoint.addActionListener(actionListener);
 		submitContestBtn.addActionListener(actionListener);
-		loginButton.addActionListener(actionListener);
+		loginBtn.addActionListener(actionListener);
 	}
-	class GameListRenderer extends JLabel implements ListCellRenderer<Object> {
-
+	/*class GameListRenderer extends JLabel implements ListCellRenderer<Object> {
 		@Override
 		public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			System.out.println("RENDERER = "+list);
@@ -634,11 +666,29 @@ public class AppUi {
 			setFont(new Font("±¼¸²", Font.BOLD, 13));
 			return this;
 		}
-		
-	}
+	}*/
 	
 	public class AppActionListener implements ActionListener {
-		// AppCommon appCommon = new AppCommon();
+		/*@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				System.out.println("ENTER");
+				loginBtn.doClick();
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}*/
 		
 		@Override
 		public void actionPerformed(ActionEvent ev) {
@@ -660,7 +710,7 @@ public class AppUi {
 					// System.out.println("==== GAME INFO = "+gameInfos);
 					emailText.setEnabled(false);
 					passwordText.setEnabled(false);
-					loginButton.setEnabled(false);
+					loginBtn.setEnabled(false);
 					submitContestBtn.setVisible(true);
 					createContestBtn.setVisible(true);
 				} else {
@@ -679,7 +729,7 @@ public class AppUi {
 				mainPanel.setVisible(true);
 				submitPanel.setVisible(false);
 				submitResultText.setText("");
-				submitGameTypeLol.setSelected(true);
+				submitSportsTypeLol.setSelected(true);
 				submitCurrencyAll.setSelected(true);
 			} else if ("CREATECONTEST".equals(action)) {
 				mainPanel.setVisible(false);
@@ -692,7 +742,8 @@ public class AppUi {
 			} else if ("CREATEBACK".equals(action)) {
 				mainPanel.setVisible(true);
 				createPanel.setVisible(false);
-				clearCreateParam();
+				createSportsBtnGroup.clearSelection();
+				currencyBtnGroup.clearSelection();
 			} else if ("point".equals(action)) {
 				entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"5", "10", "20", "50"}));
 			} else if ("gdc".equals(action)) {
@@ -703,9 +754,11 @@ public class AppUi {
 		private void submitProcessAction() {
 			ButtonModel sportsBtnModel = submitSportsBtnGroup.getSelection();
 			ButtonModel currencyBtnModel = submitCurrencyBtnGroup.getSelection();
+			ButtonModel gameTypeBtnModel = submitTypeBtnGroup.getSelection();
 			
 			String sportsBtn = sportsBtnModel.getActionCommand();
 			String currencyBtn = currencyBtnModel.getActionCommand(); // all, gdc, point
+			String gameTypeBtn = gameTypeBtnModel.getActionCommand(); // All, Tournaments, 50/50, 30/30
 			
 			submitResultText.setText("");
 			submitResultText.setForeground(Color.BLUE);
@@ -713,7 +766,7 @@ public class AppUi {
 			submitBackBtn.setEnabled(false);
 			submitOkBtn.setEnabled(false);
 			
-			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, submitResultText, submitBackBtn, submitStopBtn, submitOkBtn);
+			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, gameTypeBtn, submitResultText, submitBackBtn, submitStopBtn, submitOkBtn);
 			appSubmitContest.setDaemon(true);
 			appSubmitContest.start();
 		}
@@ -730,8 +783,8 @@ public class AppUi {
 			String typeBtn = null;
 			
 			int count = 0;
-			ButtonModel sportsBtnModel = sportsBtnGroup.getSelection();
-			ButtonModel typeBtnModel = typeBtnGroup.getSelection();
+			ButtonModel sportsBtnModel = createSportsBtnGroup.getSelection();
+			ButtonModel typeBtnModel = createTypeBtnGroup.getSelection();
 			if (sportsBtnModel != null) {
 				sportsBtn = sportsBtnModel.getActionCommand();
 				ButtonModel currencyBtnmodel = currencyBtnGroup.getSelection();
@@ -784,18 +837,13 @@ public class AppUi {
 		}
 		
 		private void setCreateParam() {
-			createLimitText.setText("Limit "+AppCommon.CREATE_COUNT+" Contests");
+			createLimitText.setText("Limit Contests : "+AppCommon.CREATE_COUNT);
 			createResultText.setText("");
 			createResultText.setVisible(false);
-			gameTypeLol.setSelected(true);
+			createSportsTypeLol.setSelected(true);
 			currencyGdc.setSelected(true);
 			entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"25", "50", "100", "250"}));
 			contestCounts.setText("0");
-		}
-		
-		private void clearCreateParam() {
-			sportsBtnGroup.clearSelection();
-			currencyBtnGroup.clearSelection();
 		}
 	}
 }
