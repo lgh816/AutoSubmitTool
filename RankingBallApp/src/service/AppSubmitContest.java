@@ -46,25 +46,36 @@ public class AppSubmitContest extends Thread implements CommonData {
 			System.out.println("====== [SUBMIT] Thread RUN");
 			appCommon.selectSports(SUBMIT_SPORTS_ID);
 			appCommon.checkPopup();
+			
+			Actions moveToGameArea = new Actions(DRIVER);
+			
 			// Count of Games
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 			List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 			int gameSize = gameElements.size();
 			
+			System.out.println("====== [SUBMIT] Selected Game Type = "+SUBMIT_GAME_TYPE);
 			System.out.println("====== [SUBMIT] Today's Game Count = "+gameSize);
+			
 			SUBMIT_RESULT_TEXT.setText("Check Games......");
 			for (int i = 0; i < gameSize; i++) { // Loop Today Games
 				int totalGdc = 0;
 				int totalPoint = 0;
 				Thread.sleep(1500);
+				
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				String eachGameId = gameElements.get(i).getAttribute("id");
+				
+				webElement = DRIVER.findElement(By.id(eachGameId));
+				moveToGameArea.moveToElement(webElement);
+				moveToGameArea.perform();
+				
 				String checkJoined = DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
 				System.out.println("====== [SUBMIT] CHECK JOINED = "+checkJoined);
 				if (checkJoined.isEmpty()) { // Check joined or not
-					webElement = DRIVER.findElement(By.id(eachGameId));
-					webElement.click();
+					
+					webElement.click(); // Click one game
 					
 					wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#container div.content div div.contest-content.new-contest .contest")));
 					List<WebElement> contestElements = DRIVER.findElements(By.cssSelector("#container div.content div div.contest-content.new-contest .contest"));

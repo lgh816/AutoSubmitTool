@@ -147,7 +147,7 @@ public class AppUi {
 		JLabel mainTopImg = new JLabel("");
 		Image img = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallTop.PNG"));
 		mainTopImg.setIcon(new ImageIcon(img));
-		mainTopImg.setBounds(0, 0, 340, 247);
+		mainTopImg.setBounds(-12, 0, 354, 247);
 		frmRankingBallAuto.getContentPane().add(mainTopImg);
 	}
 	

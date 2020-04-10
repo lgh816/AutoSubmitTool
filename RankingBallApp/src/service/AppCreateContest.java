@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -57,36 +58,42 @@ public class AppCreateContest extends Thread implements CommonData {
 			int entriesIdx = Integer.parseInt(param.get("entriesIdx"));
 			int count = Integer.parseInt(param.get("count"));
 			
-			System.out.println("====== [CREATE] Create Properties "+CREATE_COUNT);
-			System.out.println("====== [CREATE] Selected Type = "+selectedType);
-			CREATE_RESULT_TEXT.setText("Check Games......");
-
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
+			Actions moveToGameArea = new Actions(DRIVER);
+			
+			/*wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
 			WebElement gameTypeElement = DRIVER.findElement(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']"));
 			String checkActive = gameTypeElement.getAttribute("class");
 			if (!checkActive.contains("active")) {
 				gameTypeElement.click();
-			}
+			}*/
 			
 			// Count of Games
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 			List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 			int gameSize = gameElements.size();
 			
+			System.out.println("====== [CREATE] Create Count Properties "+CREATE_COUNT);
+			System.out.println("====== [CREATE] Selected Game Type = "+selectedType);
 			System.out.println("====== [CREATE] Today's Game Count = "+gameSize);
-			for (int i = 0; i < gameSize; i++) {
+			
+			CREATE_RESULT_TEXT.setText("Check Games......");
+			for (int i = 0; i < gameSize; i++) { // Loop Today Games
 				Boolean backFlag = true;
 				
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				String eachGameId = gameElements.get(i).getAttribute("id");
+				
+				webElement = DRIVER.findElement(By.id(eachGameId));
+				moveToGameArea.moveToElement(webElement);
+				moveToGameArea.perform();
+				
 				String checkJoined = DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[1]/span[1]")).getAttribute("style");
 				System.out.println("====== [CREATE] CHECK JOINED = "+checkJoined);
 				if (checkJoined.isEmpty()) {  // Check joined or not
-					webElement = DRIVER.findElement(By.id(eachGameId));
-					int eachContentSize = Integer.parseInt(DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
-					System.out.println("====== [CREATE] [Contests Size = "+eachContentSize+"] ======");
-					if (eachContentSize > CREATE_COUNT) {
+					int eachContestSize = Integer.parseInt(DRIVER.findElement(By.xpath("//*[@id='"+eachGameId+"']/div[2]/div[2]/p[2]/span")).getText());
+					System.out.println("====== [CREATE] [Contests Size = "+eachContestSize+"] ======");
+					if (eachContestSize > CREATE_COUNT) {
 						backFlag = false;
 						System.out.println("====== [CREATE] [Over "+CREATE_COUNT+" Contests] =====");
 						Thread.sleep(2000);
@@ -98,11 +105,16 @@ public class AppCreateContest extends Thread implements CommonData {
 						int contestSize = contestElements.size();
 						String homeTeam = DRIVER.findElement(By.cssSelector("#container .content .game-content .game-info-content .contest-info .t-first")).getText();
 						String awayTeam = DRIVER.findElement(By.cssSelector("#container .content .game-content .game-info-content .contest-info .t-second")).getText();
+						int eachMatch = i + 1;
+						String matchTitle = "[Match "+eachMatch+"/"+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
+						
 						System.out.println("===================================");
 						System.out.println("====== [CREATE] "+homeTeam+" vs " + awayTeam);
 						System.out.println("====== [CREATE] "+contestSize+" CONTESTS");
-						int eachMatch = i + 1;
-						String matchTitle = "[Match "+eachMatch+"/"+gameSize+"] - ["+homeTeam+" vs " + awayTeam+"]";
+						System.out.println(matchTitle);
+						System.out.println("====== [CREATE] Selected Currency = "+currency);
+						System.out.println("====== [CREATE] Selected Game Type = "+selectedType);
+						
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='container']/div[2]/div/div[2]/div[1]/a")));
 						
@@ -115,7 +127,7 @@ public class AppCreateContest extends Thread implements CommonData {
 						} else { // 'point'
 							currencyBtn = DRIVER.findElement(By.xpath("//*[@id='assetType']/li[2]"));
 						}
-						currencyBtn.click();
+						currencyBtn.click(); // Click 'Currency'
 						List<WebElement> typeArr = DRIVER.findElements(By.xpath("//*[@id='contestType']/li"));
 						int typeSize = typeArr.size();
 						
@@ -127,15 +139,15 @@ public class AppCreateContest extends Thread implements CommonData {
 							
 							if (!"Head-to-Head".equals(text) && (selectedType.equals("All") || selectedType.equals(text))) {
 								for (int k = 0; k < count; k ++) {
-									if (eachContentSize <= CREATE_COUNT) {
+									if (eachContestSize <= CREATE_COUNT) {
 										Thread.sleep(2500);
 										wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='contestType']/li["+childCnt+"]")));
 										WebElement eachType = DRIVER.findElement(By.xpath("//*[@id='contestType']/li["+childCnt+"]"));
 										eachType.click();
 										setCreateOptions(entryFee, entries, entryFeeIdx, entriesIdx);
-										eachContentSize =  eachContentSize + 1;
+										eachContestSize =  eachContestSize + 1;
 										System.out.println("====== [CREATE] [Create "+(k+1)+"] "+text+" [Fee] "+entryFee+" "+currency+" [Entry] "+entries+"");
-										System.out.println("====== [CREATE] [ContestSize] "+eachContentSize+" =====");
+										System.out.println("====== [CREATE] [ContestSize] "+eachContestSize+" =====");
 										
 										// ================= Calculate Percent ===================
 										double percent = (double) ( (double)(k+1) / (double)count) * 100;
