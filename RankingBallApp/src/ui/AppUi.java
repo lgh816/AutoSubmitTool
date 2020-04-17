@@ -39,6 +39,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import java.awt.Insets;
 import javax.swing.ListSelectionModel;
+import javax.swing.AbstractListModel;
+import java.awt.Rectangle;
+import javax.swing.border.LineBorder;
+import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.Point;
 
 public class AppUi {
 
@@ -105,6 +111,7 @@ public class AppUi {
 	private JTextField createLimitText;
 	private JTextField createGameType;
 	public JList submitTodayGameList;
+	private JList list;
 	
 	/**
 	 * Launch the application.
@@ -473,39 +480,39 @@ public class AppUi {
 		submitSportsTypeLol = new JToggleButton("League Of Legends");
 		submitSportsTypeLol.setSelected(true);
 		submitSportsTypeLol.setName("lol");
-		submitSportsTypeLol.setActionCommand("lol");
+		submitSportsTypeLol.setActionCommand("selectSports");
 		submitSportsTypeLol.setBounds(15, 22, 155, 28);
 		submitPanel.add(submitSportsTypeLol);
 		submitSportsBtnGroup.add(submitSportsTypeLol);
 		
 		submitSportsTypeBaseball = new JToggleButton("Baseball");
 		submitSportsTypeBaseball.setName("baseball");
-		submitSportsTypeBaseball.setEnabled(false);
-		submitSportsTypeBaseball.setActionCommand("submitBaseball");
+		// submitSportsTypeBaseball.setEnabled(false);
+		submitSportsTypeBaseball.setActionCommand("selectSports");
 		submitSportsTypeBaseball.setBounds(172, 22, 155, 28);
 		submitPanel.add(submitSportsTypeBaseball);
 		submitSportsBtnGroup.add(submitSportsTypeBaseball);
 		
 		submitSportsTypeSoc = new JToggleButton("Soccer");
 		submitSportsTypeSoc.setName("soccer");
-		submitSportsTypeSoc.setEnabled(false);
-		submitSportsTypeSoc.setActionCommand("submitSoccer");
+		// submitSportsTypeSoc.setEnabled(false);
+		submitSportsTypeSoc.setActionCommand("selectSports");
 		submitSportsTypeSoc.setBounds(15, 53, 101, 28);
 		submitPanel.add(submitSportsTypeSoc);
 		submitSportsBtnGroup.add(submitSportsTypeSoc);
 		
 		submitSportsTypeBsk = new JToggleButton("Basketball");
 		submitSportsTypeBsk.setName("basketball");
-		submitSportsTypeBsk.setEnabled(false);
-		submitSportsTypeBsk.setActionCommand("submitBasketball");
+		// submitSportsTypeBsk.setEnabled(false);
+		submitSportsTypeBsk.setActionCommand("selectSports");
 		submitSportsTypeBsk.setBounds(226, 53, 101, 28);
 		submitPanel.add(submitSportsTypeBsk);
 		submitSportsBtnGroup.add(submitSportsTypeBsk);
 		
 		submitSportsTypeFob = new JToggleButton("Football");
 		submitSportsTypeFob.setName("football");
-		submitSportsTypeFob.setEnabled(false);
-		submitSportsTypeFob.setActionCommand("submitFootball");
+		// submitSportsTypeFob.setEnabled(false);
+		submitSportsTypeFob.setActionCommand("selectSports");
 		submitSportsTypeFob.setBounds(120, 53, 102, 28);
 		submitPanel.add(submitSportsTypeFob);
 		submitSportsBtnGroup.add(submitSportsTypeFob);
@@ -734,6 +741,15 @@ public class AppUi {
 				createPanel.setVisible(false);
 				createSportsBtnGroup.clearSelection();
 				currencyBtnGroup.clearSelection();
+				
+				
+			} else if ("selectSports".equals(action)) {
+				ButtonModel sportsBtnModel = submitSportsBtnGroup.getSelection();
+				Object test = sportsBtnModel.getSelectedObjects();
+				System.out.println("TEST = "+ test);
+				// String gameId = appCommon.getGameId("lol");
+				
+				
 			} else if ("point".equals(action)) {
 				entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"5", "10", "20", "50"}));
 			} else if ("gdc".equals(action)) {
