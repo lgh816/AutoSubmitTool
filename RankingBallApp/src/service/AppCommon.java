@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -16,11 +19,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import data.CommonData;
 
 public class AppCommon implements CommonData {
-	public static String BASE_URL;
-	public static String USER_ID;
-	public static int CREATE_COUNT;
+	public String BASE_URL;
+	public String USER_ID;
+	public int CREATE_COUNT;
 	
-	public static void getReadProperties() {
+	public void getReadProperties() {
 		try {
 			FileReader resource = new FileReader("config.properties");
 			Properties properties = new Properties();
@@ -150,45 +153,39 @@ public class AppCommon implements CommonData {
 		}
 	}
 	
-	/*public ArrayList<Object> getTodaysMatch() {
-		wait = new WebDriverWait(DRIVER, 30);
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-		List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
-		int gameSize = gameElements.size();
-		ArrayList<Object> gameInfoArr = new ArrayList<Object>();
-		Map<String, String> eachGameInfo = new HashMap<String, String>();
-		 [
-		 * 		{
-		 * 			"title" : "WE (2 - 6) vs RW (4 - 4)",
-		 * 			"time" : "06:00 PM"
-		 * 			"contests" : 138,
-		 * 			"game_id" : 34324,
-		 * 		}
-		 * ]
-		 * 
-		for (int i = 0; i < gameSize; i++) {
-			// wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-			gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
-			String game_id = gameElements.get(i).getAttribute("id");
-			String time = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[1]/div[1]/p")).getText();
-			String homeTeam = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[1]/div[1]/span[2]")).getText();
-			String cnvtHomeTeam[] = homeTeam.split("\n");
-			String awayTeam = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[1]/div[2]/span[2]")).getText();
-			String cnvtAwayTeam[] = awayTeam.split("\n");
-			String title = cnvtHomeTeam[0] + " vs " + cnvtAwayTeam[0];
-			String contests = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[2]/p[2]/span")).getText();
+	public List<String> getTodaysMatch(JList gameList) {
+		// Map todayGameInfo = new HashMap<>();
+		DefaultListModel model = (DefaultListModel) gameList.getModel();
+		List<String> gameId = new ArrayList<String>();
+		try {
+			WebDriverWait wait = new WebDriverWait(DRIVER, 5);
+			wait = new WebDriverWait(DRIVER, 30);
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+			List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+			int gameSize = gameElements.size();
 			
-			String result = title + " " + time + " " + contests + " Contests";
-					
-			eachGameInfo.put("title", title);
-			eachGameInfo.put("time", time);
-			eachGameInfo.put("contests", contests);
-			eachGameInfo.put("game_id", game_id);
-			eachGameInfo.put("result", result);
-			gameInfoArr.add(eachGameInfo);
-			eachGameInfo = new HashMap<String, String>();
+			for (int i = 0; i < gameSize; i++) {
+				// wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				String game_id = gameElements.get(i).getAttribute("id");
+				String time = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[1]/div[1]/p")).getText();
+				String homeTeam = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[1]/div[1]/span[2]")).getText();
+				String cnvtHomeTeam[] = homeTeam.split("\n");
+				String awayTeam = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[1]/div[2]/span[2]")).getText();
+				String cnvtAwayTeam[] = awayTeam.split("\n");
+				String title = cnvtHomeTeam[0] + " vs " + cnvtAwayTeam[0];
+				String contests = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[2]/div[2]/p[2]/span")).getText();
+				String result = title + " " + time + " " + contests + " Contests"; // WE vs RW 18:00 PM 138 Contests
+				
+				model.addElement(result);
+				gameId.add(game_id);
+			}
+			System.out.println("Game ID Array = "+gameId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			String exceptionMsg = e.getMessage();
+			System.out.println("====== [getTodaysMatch] Exception Message = "+exceptionMsg);
 		}
-		
-		return gameInfoArr;
-	}*/
+		return gameId;
+	}
 }

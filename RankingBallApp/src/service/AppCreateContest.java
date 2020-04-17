@@ -39,7 +39,7 @@ public class AppCreateContest extends Thread implements CommonData {
 		this.CREATE_STOP_BTN = createStopBtn;
 		this.CREATE_OK_BTN = createOkBtn;
 		this.CREATE_RESULT_TEXT = createResultText;
-		this.CREATE_COUNT = AppCommon.CREATE_COUNT;
+		this.CREATE_COUNT = appCommon.CREATE_COUNT;
 	}
 	
 	public void run() {

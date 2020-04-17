@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
@@ -28,15 +29,21 @@ public class AppSubmitContest extends Thread implements CommonData {
 	private JTextField SUBMIT_RESULT_TEXT;
 	private JButton SUBMIT_BACK_BTN;
 	private JButton SUBMIT_STOP_BTN;
+	private JButton SUBMIT_ALL_OK_BTN;
 	private JButton SUBMIT_OK_BTN;
+	private String SUBMIT_SELECTED_GAME_ID;
+	private JList SUBMIT_GAME_LIST;
 	
-	public AppSubmitContest(String gameType, String currencyBtn, String gameTypeBtn, JTextField submitResultText, JButton submitBackBtn, JButton submitStopBtn, JButton submitOkBtn) {
+	public AppSubmitContest(String gameType, String currencyBtn, String gameTypeBtn, JTextField submitResultText, JButton submitBackBtn, JButton submitStopBtn, JButton submitAllOkBtn, JButton submitOkBtn, String selectedGameId, JList submitTodayGameList) {
 		this.SUBMIT_SPORTS_ID = appCommon.getGameId(gameType);
 		this.SUBMIT_GAME_TYPE = gameTypeBtn;
 		this.SUBMIT_RESULT_TEXT = submitResultText;
 		this.SUBMIT_BACK_BTN = submitBackBtn;
 		this.SUBMIT_STOP_BTN = submitStopBtn;
+		this.SUBMIT_ALL_OK_BTN = submitAllOkBtn;
 		this.SUBMIT_OK_BTN = submitOkBtn;
+		this.SUBMIT_SELECTED_GAME_ID = selectedGameId;
+		this.SUBMIT_GAME_LIST = submitTodayGameList;
 		this.CURRENCY = currencyBtn;
 	}
 	
@@ -48,11 +55,17 @@ public class AppSubmitContest extends Thread implements CommonData {
 			appCommon.checkPopup();
 			
 			Actions moveToGameArea = new Actions(DRIVER);
+			int gameSize = 1;
+			List<WebElement> gameElements = null;
 			
 			// Count of Games
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-			List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
-			int gameSize = gameElements.size();
+			if (SUBMIT_SELECTED_GAME_ID == null) { // Click 'SUBMIT All'
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				gameSize = gameElements.size();
+			} else {
+				System.out.println("====== [SUBMIT] Select One Game");
+			}
 			
 			System.out.println("====== [SUBMIT] Selected Game Type = "+SUBMIT_GAME_TYPE);
 			System.out.println("====== [SUBMIT] Today's Game Count = "+gameSize);
@@ -63,9 +76,14 @@ public class AppSubmitContest extends Thread implements CommonData {
 				int totalPoint = 0;
 				Thread.sleep(1500);
 				
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
-				String eachGameId = gameElements.get(i).getAttribute("id");
+				String eachGameId = null;
+				if (SUBMIT_SELECTED_GAME_ID == null) {
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+					gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+					eachGameId = gameElements.get(i).getAttribute("id");
+				} else {
+					eachGameId = SUBMIT_SELECTED_GAME_ID;
+				}
 				
 				webElement = DRIVER.findElement(By.id(eachGameId));
 				moveToGameArea.moveToElement(webElement);
@@ -189,7 +207,9 @@ public class AppSubmitContest extends Thread implements CommonData {
 		} finally {
 			SUBMIT_BACK_BTN.setEnabled(true);
 			SUBMIT_STOP_BTN.setEnabled(false);
+			SUBMIT_ALL_OK_BTN.setEnabled(true);
 			SUBMIT_OK_BTN.setEnabled(true);
+			SUBMIT_GAME_LIST.setEnabled(true);
 			if (exceptionMsg != null) {
 				SUBMIT_RESULT_TEXT.setForeground(Color.RED);
 				if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
