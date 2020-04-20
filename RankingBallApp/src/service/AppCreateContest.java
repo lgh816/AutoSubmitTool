@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
@@ -29,17 +30,23 @@ public class AppCreateContest extends Thread implements CommonData {
 	private JButton CREATE_BACK_BTN;
 	private JButton CREATE_STOP_BTN;
 	private JButton CREATE_OK_BTN;
+	private JButton CREATE_ALL_OK_BTN;
 	private JTextField CREATE_RESULT_TEXT;
+	private String CREATE_SELECTED_GAME_ID;
+	private JList CREATE_GAME_LIST;
 	private int CREATE_COUNT;
 	
-	public AppCreateContest(Map<String, String> param, JTextField createResultText, JButton createBackBtn, JButton createStopBtn, JButton createOkBtn) {
+	public AppCreateContest(Map<String, String> param, JTextField createResultText, JButton createBackBtn, JButton createStopBtn, JButton createAllOkBtn, JButton createOkBtn, String selectedGameId, JList createTodayGameList) {
 		this.param = param;
 		this.CREATE_SPORTS_ID = appCommon.getGameId(param.get("sports"));
 		this.CREATE_BACK_BTN = createBackBtn;
 		this.CREATE_STOP_BTN = createStopBtn;
+		this.CREATE_ALL_OK_BTN = createAllOkBtn;
 		this.CREATE_OK_BTN = createOkBtn;
+		this.CREATE_SELECTED_GAME_ID = selectedGameId;
+		this.CREATE_GAME_LIST = createTodayGameList;
 		this.CREATE_RESULT_TEXT = createResultText;
-		this.CREATE_COUNT = appCommon.CREATE_COUNT;
+		this.CREATE_COUNT = AppCommon.CREATE_COUNT;
 	}
 	
 	public void run() {
@@ -59,18 +66,22 @@ public class AppCreateContest extends Thread implements CommonData {
 			int count = Integer.parseInt(param.get("count"));
 			
 			Actions moveToGameArea = new Actions(DRIVER);
+			int gameSize = 1;
+			List<WebElement> gameElements = null;
 			
-			/*wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']")));
-			WebElement gameTypeElement = DRIVER.findElement(By.xpath("//*[@id='"+CREATE_SPORTS_ID+"']"));
-			String checkActive = gameTypeElement.getAttribute("class");
-			if (!checkActive.contains("active")) {
-				gameTypeElement.click();
-			}*/
-			
+			// Count of Games
+			if (CREATE_SELECTED_GAME_ID == null) { // Click 'SUBMIT All'
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				gameSize = gameElements.size();
+			} else {
+				System.out.println("====== [CREATE] Select One Game");
+			}
+			/*
 			// Count of Games
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
 			List<WebElement> gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
-			int gameSize = gameElements.size();
+			int gameSize = gameElements.size();*/
 			
 			System.out.println("====== [CREATE] Create Count Properties "+CREATE_COUNT);
 			System.out.println("====== [CREATE] Selected Game Type = "+selectedType);
@@ -80,9 +91,18 @@ public class AppCreateContest extends Thread implements CommonData {
 			for (int i = 0; i < gameSize; i++) { // Loop Today Games
 				Boolean backFlag = true;
 				
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
-				String eachGameId = gameElements.get(i).getAttribute("id");
+				// wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+				// gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				// String eachGameId = gameElements.get(i).getAttribute("id");
+				
+				String eachGameId = null;
+				if (CREATE_SELECTED_GAME_ID == null) {
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
+					gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+					eachGameId = gameElements.get(i).getAttribute("id");
+				} else {
+					eachGameId = CREATE_SELECTED_GAME_ID;
+				}
 				
 				webElement = DRIVER.findElement(By.id(eachGameId));
 				moveToGameArea.moveToElement(webElement);
@@ -185,7 +205,9 @@ public class AppCreateContest extends Thread implements CommonData {
 		} finally {
 			CREATE_BACK_BTN.setEnabled(true);
 			CREATE_STOP_BTN.setEnabled(false);
+			CREATE_ALL_OK_BTN.setEnabled(true);
 			CREATE_OK_BTN.setEnabled(true);
+			CREATE_GAME_LIST.setEnabled(true);
 			if (exceptionMsg != null) {
 				CREATE_RESULT_TEXT.setForeground(Color.RED);
 				if (exceptionMsg.contains("sleep interrupted")) { // Click Stop Button
