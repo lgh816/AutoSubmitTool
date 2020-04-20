@@ -168,7 +168,7 @@ public class AppUi {
 		
 		emailLable = new JTextField();
 		emailLable.setBorder(null);
-		emailLable.setBounds(7, 12, 53, 21);
+		emailLable.setBounds(7, 47, 53, 21);
 		mainPanel.add(emailLable);
 		emailLable.setHorizontalAlignment(SwingConstants.CENTER);
 		emailLable.setEditable(false);
@@ -178,7 +178,7 @@ public class AppUi {
 		emailLable.setColumns(10);
 		
 		passwordLabel = new JTextField();
-		passwordLabel.setBounds(12, 39, 70, 21);
+		passwordLabel.setBounds(12, 74, 70, 21);
 		mainPanel.add(passwordLabel);
 		passwordLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		passwordLabel.setBorder(null);
@@ -189,14 +189,14 @@ public class AppUi {
 		passwordLabel.setColumns(10);
 		
 		loginBtn = new JButton("LOGIN");
-		loginBtn.setBounds(260, 9, 70, 52);
+		loginBtn.setBounds(260, 45, 70, 52);
 		mainPanel.add(loginBtn);
 		loginBtn.setFocusable(false);
 		loginBtn.setActionCommand("LOGIN");
 		loginBtn.setFont(new Font("±¼¸²", Font.BOLD, 10));
 		
 		emailText = new JTextField();
-		emailText.setBounds(89, 10, 160, 21);
+		emailText.setBounds(89, 47, 160, 21);
 		mainPanel.add(emailText);
 		emailText.setColumns(10);
 		if (AppCommon.USER_ID != null) {
@@ -204,7 +204,7 @@ public class AppUi {
 		}
 		
 		passwordText = new JPasswordField();
-		passwordText.setBounds(89, 39, 160, 21);
+		passwordText.setBounds(89, 74, 160, 21);
 		mainPanel.add(passwordText);
 		
 		JLabel mainBottomImg = new JLabel("");
