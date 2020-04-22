@@ -124,6 +124,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 							String type = null;
 							int gameFee = 0;
 							if (!"FREE".equals(gameFeeTxt)) {
+								gameFeeTxt = gameFeeTxt.replaceAll("\\,", "");
 								gameFee = Integer.parseInt(gameFeeTxt);
 							}
 							if ("asset-121015".equals(kindOfFee)) { // GDC
@@ -145,7 +146,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 							if (checkCurrencyType) {
 								if (!"JOINED".equals(joinStatus)) {
 									String checkGameTypeCss = contestElements.get(j).findElement(By.cssSelector(".row")).getAttribute("class");
-									System.out.println("====== [SUBMIT] Game Type CSS = "+checkGameTypeCss);
+									System.out.println("====== [SUBMIT] Game Type = "+checkGameTypeCss);
 									if (SUBMIT_GAME_TYPE == "All" || checkGameTypeCss.contains(SUBMIT_GAME_TYPE)) {
 										Thread.sleep(1000);
 										wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".entry-fee")));
