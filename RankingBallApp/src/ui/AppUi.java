@@ -83,6 +83,7 @@ public class AppUi {
 	private JToggleButton currencyGdc;
 	private JComboBox entriesCombo;
 	private JComboBox entryFeeCombo;
+	private JComboBox gameDateList;
 	private JTextField contestCounts;
 	private JTextField txtCount;
 	private JTextField createResultText;
@@ -243,6 +244,10 @@ public class AppUi {
 		submitSports.setBackground(Color.WHITE);
 		sportsPanel.add(submitSports);
 		
+		gameDateList = new JComboBox();
+		gameDateList.setBounds(15, 86, 312, 28);
+		sportsPanel.add(gameDateList);
+		
 		sportsTypeLol = new JToggleButton("League Of Legends");
 		sportsTypeLol.setSelected(true);
 		sportsTypeLol.setName("lol");
@@ -281,13 +286,13 @@ public class AppUi {
 		sportsBtnGroup.add(sportsTypeFob);
 		
 		submitContestBtn = new JButton("SUBMIT");
-		submitContestBtn.setBounds(12, 92, 155, 44);
+		submitContestBtn.setBounds(12, 120, 155, 44);
 		sportsPanel.add(submitContestBtn);
 		submitContestBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		submitContestBtn.setActionCommand("SUBMITCONTEST");
 		
 		createContestBtn = new JButton("CREATE");
-		createContestBtn.setBounds(170, 92, 160, 44);
+		createContestBtn.setBounds(170, 120, 160, 44);
 		sportsPanel.add(createContestBtn);
 		createContestBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		createContestBtn.setActionCommand("CREATECONTEST");
@@ -295,9 +300,10 @@ public class AppUi {
 		Image bottomImg = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("RankingBallBottom.PNG"));
 		
 		JLabel mainBottomImg = new JLabel("");
-		mainBottomImg.setBounds(0, 161, 342, 190);
+		mainBottomImg.setBounds(0, 183, 342, 168);
 		sportsPanel.add(mainBottomImg);
 		mainBottomImg.setIcon(new ImageIcon(bottomImg));
+		
 	}
 	 
 	private void initCreatePanel() {
@@ -330,6 +336,7 @@ public class AppUi {
 		currencyBtnGroup.add(currencyGdc);
 		
 		currencyPoint = new JToggleButton("Point");
+		currencyPoint.setEnabled(false);
 		currencyPoint.setActionCommand("point");
 		currencyPoint.setBounds(171, 23, 156, 28);
 		createPanel.add(currencyPoint);
@@ -579,6 +586,7 @@ public class AppUi {
 		submitCurrencyBtnGroup.add(submitCurrencyGdc);
 		
 		JToggleButton submitCurrencyPoint = new JToggleButton("Point Only");
+		submitCurrencyPoint.setEnabled(false);
 		submitCurrencyPoint.setBounds(226, 23, 101, 28);
 		submitCurrencyPoint.setActionCommand("POINT");
 		submitPanel.add(submitCurrencyPoint);
@@ -660,6 +668,7 @@ public class AppUi {
 	
 	public class AppActionListener implements ActionListener {
 		List<String> gameIdArr = new ArrayList<String>();
+		String[] gameDateArr = null;
 		
 		@Override
 		public void actionPerformed(ActionEvent ev) {
@@ -676,9 +685,10 @@ public class AppUi {
 				
 				Boolean loginResult = appLogin.loginProcess(email, cnvtPassword);
 				if (loginResult) {
-					System.out.println("==== LOGIN SUCCESS");
+					System.out.println("====== [AppMain] Login Success");
 					mainPanel.setVisible(false);
 					sportsPanel.setVisible(true);
+					AppCommon.getGameDateList(gameDateList);
 				} else {
 					System.out.println("Login Fail");
 					// appCommon.driver.close();
@@ -690,13 +700,18 @@ public class AppUi {
 				gameIdArr = new ArrayList<String>();
 				sportsPanel.setVisible(false);
 				submitPanel.setVisible(true);
-				gameIdArr = AppCommon.getTodaysMatch(submitTodayGameList, sportsBtn, submitCurrencyTxt);
+				gameIdArr = AppCommon.getTodaysMatch(submitTodayGameList, sportsBtn, submitCurrencyTxt, gameDateList);
+				if (gameIdArr.size() == 0) {
+					submitAllOkBtn.setEnabled(false);
+				} else {
+					submitAllOkBtn.setEnabled(true);
+				}
 			} else if ("SUBMITOK".equals(action)) {
 				int gameIdx = submitTodayGameList.getSelectedIndex();
 				String gameId = gameIdArr.get(gameIdx);
 				submitProcessAction(gameId);
 			} else if ("SUBMITALLOK".equals(action)) {
-				System.out.println("==== SUBMIT START");
+				System.out.println("====== [AppMain] SUBMIT START");
 				submitProcessAction(null);
 			} else if ("SUBMITSTOP".equals(action)) {
 				appSubmitContest.interrupt();
@@ -707,6 +722,7 @@ public class AppUi {
 				submitCurrencyAll.setSelected(true);
 				submitOkBtn.setEnabled(false);
 				sportsPanel.setVisible(true);
+				AppCommon.getGameDateList(gameDateList);
 			} else if ("CREATECONTEST".equals(action)) {
 				createTodayGameList.setModel(new DefaultListModel());
 				ButtonModel sportsBtnModel = sportsBtnGroup.getSelection();
@@ -715,7 +731,7 @@ public class AppUi {
 				sportsPanel.setVisible(false);
 				createPanel.setVisible(true);
 				setCreateParam();
-				gameIdArr = AppCommon.getTodaysMatch(createTodayGameList, sportsBtn, createCurrencyTxt);
+				gameIdArr = AppCommon.getTodaysMatch(createTodayGameList, sportsBtn, createCurrencyTxt, gameDateList);
 			} else if ("CREATEOK".equals(action)) {
 				int gameIdx = createTodayGameList.getSelectedIndex();
 				String gameId = gameIdArr.get(gameIdx);
@@ -729,6 +745,7 @@ public class AppUi {
 				createPanel.setVisible(false);
 				sportsPanel.setVisible(true);
 				currencyBtnGroup.clearSelection();
+				AppCommon.getGameDateList(gameDateList);
 			} else if ("point".equals(action)) {
 				entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"5", "10", "20", "50"}));
 			} else if ("gdc".equals(action)) {
@@ -753,7 +770,7 @@ public class AppUi {
 			submitAllOkBtn.setEnabled(false);
 			submitTodayGameList.setEnabled(false);
 			
-			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, gameTypeBtn, submitResultText, submitBackBtn, submitStopBtn, submitAllOkBtn, submitOkBtn, gameId, submitTodayGameList);
+			appSubmitContest = new AppSubmitContest(sportsBtn, currencyBtn, gameTypeBtn, submitResultText, submitBackBtn, submitStopBtn, submitAllOkBtn, submitOkBtn, gameId, submitTodayGameList, gameDateList);
 			appSubmitContest.setDaemon(true);
 			appSubmitContest.start();
 		}
@@ -820,7 +837,7 @@ public class AppUi {
 				createParam.put("count", Integer.toString(count));
 				System.out.println(createParam);
 				
-				appCreateContest = new AppCreateContest(createParam, createResultText, createBackBtn, createStopBtn, createAllOkBtn, createOkBtn, gameId, createTodayGameList);
+				appCreateContest = new AppCreateContest(createParam, createResultText, createBackBtn, createStopBtn, createAllOkBtn, createOkBtn, gameId, createTodayGameList, gameDateList);
 				appCreateContest.setDaemon(true);
 				appCreateContest.start();
 			}
@@ -833,6 +850,7 @@ public class AppUi {
 			//createSportsTypeLol.setSelected(true);
 			currencyGdc.setSelected(true);
 			entryFeeCombo.setModel(new DefaultComboBoxModel(new String[] {"25", "50", "100", "250"}));
+			entriesCombo.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"}));
 			contestCounts.setText("0");
 		}
 	}

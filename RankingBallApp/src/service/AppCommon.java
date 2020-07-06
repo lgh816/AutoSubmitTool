@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
@@ -34,12 +36,12 @@ public class AppCommon implements CommonData {
 			try {
 				CREATE_COUNT = Integer.parseInt(properties.getProperty("CREATE"));
 			} catch (NumberFormatException e) {
-				System.out.println("[ConfigFile - CREATE ] Invalid value in CREATE");
+				System.out.println("====== [AppCommon] Invalid value in 'CREATE' Set default value '100'");
 				CREATE_COUNT = 100;
 			}
-			System.out.println("[ConfigFile - URL ] = "+BASE_URL);
-			System.out.println("[ConfigFile - ID ] = "+USER_ID);
-			System.out.println("[ConfigFile - CREATE ] = "+CREATE_COUNT);
+			System.out.println("====== [AppCommon] ConfigFile_URL = "+BASE_URL);
+			System.out.println("====== [AppCommon] ConfigFile_ID = "+USER_ID);
+			System.out.println("====== [AppCommon] ConfigFile_CREATE  = "+CREATE_COUNT);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,9 +57,9 @@ public class AppCommon implements CommonData {
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='"+sportsId+"']")));
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='"+sportsId+"']")));
 				sportsBtn = DRIVER.findElement(By.xpath("//*[@id='"+sportsId+"']"));
-				System.out.println("[Select Sports] = "+sportsId);
+				System.out.println("====== [AppCommon] Click Top Area Sports = "+sportsId);
 			} else {
-				System.out.println("[Select RANKINGBALL Icon]");
+				System.out.println("====== [AppCommon] Click Top RANKINGBALL Icon");
 				WebElement rankingballIconBtn = DRIVER.findElement(By.xpath("//*[@id='container']/div[1]/div/h1/a")); 
 				moveAction.moveToElement(rankingballIconBtn);
 				moveAction.perform();
@@ -72,7 +74,7 @@ public class AppCommon implements CommonData {
 			sportsBtn.click();
 		} catch (Exception e) {
 			String exceptionMsg = e.getMessage();
-			System.out.println("[Select Sports] Exception Message = "+exceptionMsg);
+			System.out.println("====== [AppCommon] Select Sports Exception Message = "+exceptionMsg);
 		}
 	}
 	
@@ -114,13 +116,14 @@ public class AppCommon implements CommonData {
 			WebDriverWait wait = new WebDriverWait(DRIVER, 5);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='btnClose']")));
 			result = DRIVER.findElement(By.xpath("//*[@id='btnClose']")).isDisplayed();
-			System.out.println("CHECK POPUP = "+result);
+			System.out.println("====== [AppCommon] Check Popup = "+result);
 			if (result) {
+				System.out.println("====== [AppCommon] Close Popup");
 				DRIVER.findElement(By.xpath("//*[@id='btnClose']")).click();
 			}
 		} catch (Exception e) {
 			String exceptionMsg = e.getMessage();
-			System.out.println("[Check Event Popup] Exception Message = "+exceptionMsg);
+			System.out.println("====== [AppCommon] Check Event Popup = Not Exist Popup");
 		}
 	}
 	
@@ -158,7 +161,7 @@ public class AppCommon implements CommonData {
 				Thread.sleep(1300);
 				// DRIVER.navigate().back();
 			} else {
-				System.out.println("====== ["+type+"] Entries Not Exist !!!!!!!! ======");
+				System.out.println("====== [AppCommon] ["+type+"] Entries Not Exist !!!!!!!! ======");
 			}
 			loadButtonElement = null;
 			checkEntries = null;
@@ -166,15 +169,18 @@ public class AppCommon implements CommonData {
 		} catch (Exception e) {
 			e.printStackTrace();
 			String exceptionMsg = e.getMessage();
-			System.out.println("====== ["+type+"] SubmitProcess Exception Message = "+exceptionMsg);
+			System.out.println("====== [AppCommon] ["+type+"] SubmitProcess Exception Message = "+exceptionMsg);
 		}
 	}
 	
-	public static List<String> getTodaysMatch(JList gameList, String sportsBtn, JTextField currencyTxt) {
+	public static List<String> getTodaysMatch(JList gameList, String sportsBtn, JTextField currencyTxt, JComboBox gameDateList) {
+		System.out.println("====== [AppCommon] ===================");
 		DefaultListModel model = (DefaultListModel) gameList.getModel();
 		model.removeAllElements();
 		List<String> gameId = new ArrayList<String>();
 		setCurrencyText(sportsBtn, currencyTxt);
+		String gameDate = String.valueOf(gameDateList.getSelectedItem());
+		int gameDepth = 2;
 		try {
 			WebDriverWait wait = new WebDriverWait(DRIVER, 5);
 			String convertGemaId = getGameId(sportsBtn);
@@ -186,32 +192,40 @@ public class AppCommon implements CommonData {
 			try {
 				String noList = DRIVER.findElement(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/div")).getAttribute("class");
 				if ("no-list".equals(noList)) {
-					System.out.println("NO LIST");
+					System.out.println("====== [AppCommon] NO LIST");
 					model.removeAllElements();
 					model.clear();
 					model.addElement("");
 					return gameId;
-				} else {
-					gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
 				}
-				System.out.println("PASS = "+gameElements);
 			} catch (Exception e) {
-				/*e.printStackTrace();
-				System.out.println("RETURN");
-				model.removeAllElements();
-				model.clear();
-				model.addElement("");
-				return gameId;*/
-				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				/*gameDepth = 0;
+				List<WebElement> gameDateElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li"));
+				for (int i = 0; i < gameDateElements.size(); i++) {
+					String dateClass = gameDateElements.get(i).getAttribute("class");
+					if ("date-tit".equals(dateClass)) {
+						String dateTxt = gameDateElements.get(i).getText();
+						if (dateTxt.equals(gameDate)) {
+							int index = gameDateList.getSelectedIndex();
+							gameDepth = i + 2;
+							System.out.println("DATE INDEX = "+index);
+							break;
+						}
+					}
+				}
+				System.out.println("GAME DEPTH = "+gameDepth);*/
+				int index = gameDateList.getSelectedIndex();
+				gameDepth = (index + 1) * 2;
+				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li["+gameDepth+"]/div"));
 			}
-			
-			System.out.println("SELECTED SPORTS = "+sportsBtn);
+			System.out.println("====== [AppCommon] Selected Date = "+gameDate);
+			System.out.println("====== [AppCommon] Selected Sports = "+sportsBtn);
 			
 			int gameSize = gameElements.size();
 			
 			for (int i = 0; i < gameSize; i++) {
 				// wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li["+gameDepth+"]/div"));
 				String game_id = gameElements.get(i).getAttribute("id");
 				String time = DRIVER.findElement(By.xpath("//*[@id='"+game_id+"']/div[1]/div[1]/p")).getText();
 				String homeTeam = null;
@@ -236,15 +250,44 @@ public class AppCommon implements CommonData {
 				model.addElement(result);
 				gameId.add(game_id);
 			}
-			System.out.println("Game ID Array = "+gameId);
+			System.out.println("====== [AppCommon] Game ID Array = "+gameId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.removeAllElements();
 			model.clear();
 			model.addElement("");
 			String exceptionMsg = e.getMessage();
-			System.out.println("====== [getTodaysMatch] Exception Message = "+exceptionMsg);
+			System.out.println("====== [AppCommon] getTodaysMatch Exception Message = "+exceptionMsg);
 		}
+		System.out.println("====== [AppCommon] ===================");
+		System.out.println("====================================");
 		return gameId;
+	}
+
+	public static void getGameDateList(JComboBox gameDateList) {
+		WebDriverWait wait = new WebDriverWait(DRIVER, 5);
+		try {
+			Thread.sleep(1000);
+			wait = new WebDriverWait(DRIVER, 30);
+			List<WebElement> gameDateElements = null;
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul")));
+			gameDateElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li"));
+			if (gameDateElements.size() == 0) {
+				return;
+			} else {
+				gameDateList.setModel(new DefaultComboBoxModel());
+			}
+			for (int i = 0; i < gameDateElements.size(); i++) {
+				String dateClass = gameDateElements.get(i).getAttribute("class");
+				if ("date-tit".equals(dateClass)) {
+					String dateTxt = gameDateElements.get(i).getText();
+					gameDateList.addItem(dateTxt);
+					// System.out.println("====== [AppCommon] getGameDateList "+dateTxt);
+				}
+			}
+		} catch (Exception e) {
+			String exceptionMsg = e.getMessage();
+			System.out.println("====== [AppCommon] getGameDateList Exception Message = "+exceptionMsg);
+		}
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
@@ -27,6 +28,7 @@ public class AppCreateContest extends Thread implements CommonData {
 	private AppCommon appCommon = new AppCommon();
 	private Map<String, String> param;
 	private String CREATE_SPORTS_ID;
+	private Integer GAME_DATE_IDX;
 	private JButton CREATE_BACK_BTN;
 	private JButton CREATE_STOP_BTN;
 	private JButton CREATE_OK_BTN;
@@ -36,9 +38,10 @@ public class AppCreateContest extends Thread implements CommonData {
 	private JList CREATE_GAME_LIST;
 	private int CREATE_COUNT;
 	
-	public AppCreateContest(Map<String, String> param, JTextField createResultText, JButton createBackBtn, JButton createStopBtn, JButton createAllOkBtn, JButton createOkBtn, String selectedGameId, JList createTodayGameList) {
+	public AppCreateContest(Map<String, String> param, JTextField createResultText, JButton createBackBtn, JButton createStopBtn, JButton createAllOkBtn, JButton createOkBtn, String selectedGameId, JList createTodayGameList, JComboBox gameDateList) {
 		this.param = param;
 		this.CREATE_SPORTS_ID = appCommon.getGameId(param.get("sports"));
+		this.GAME_DATE_IDX = gameDateList.getSelectedIndex();
 		this.CREATE_BACK_BTN = createBackBtn;
 		this.CREATE_STOP_BTN = createStopBtn;
 		this.CREATE_ALL_OK_BTN = createAllOkBtn;
@@ -51,6 +54,7 @@ public class AppCreateContest extends Thread implements CommonData {
 	
 	public void run() {
 		String exceptionMsg = null;
+		int gameDepth = 0;
 		try {
 			System.out.println("====== [CREATE] Thread RUN");
 			appCommon.selectSports(CREATE_SPORTS_ID);
@@ -69,10 +73,11 @@ public class AppCreateContest extends Thread implements CommonData {
 			int gameSize = 1;
 			List<WebElement> gameElements = null;
 			
+			gameDepth = (GAME_DATE_IDX + 1) * 2;
 			// Count of Games
 			if (CREATE_SELECTED_GAME_ID == null) { // Click 'SUBMIT All'
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li["+gameDepth+"]/div")));
+				gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li["+gameDepth+"]/div"));
 				gameSize = gameElements.size();
 			} else {
 				System.out.println("====== [CREATE] Select One Game");
@@ -97,8 +102,8 @@ public class AppCreateContest extends Thread implements CommonData {
 				
 				String eachGameId = null;
 				if (CREATE_SELECTED_GAME_ID == null) {
-					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div")));
-					gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li[2]/div"));
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li["+gameDepth+"]/div")));
+					gameElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li["+gameDepth+"]/div"));
 					eachGameId = gameElements.get(i).getAttribute("id");
 				} else {
 					eachGameId = CREATE_SELECTED_GAME_ID;
