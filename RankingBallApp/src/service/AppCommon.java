@@ -267,10 +267,10 @@ public class AppCommon implements CommonData {
 	public static void getGameDateList(JComboBox gameDateList) {
 		WebDriverWait wait = new WebDriverWait(DRIVER, 5);
 		try {
-			Thread.sleep(1000);
-			wait = new WebDriverWait(DRIVER, 30);
+			// Thread.sleep(1000);
+			// wait = new WebDriverWait(DRIVER, 30);
 			List<WebElement> gameDateElements = null;
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul")));
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li")));
 			gameDateElements = DRIVER.findElements(By.xpath("//*[@id='container']/div[2]/div/div[3]/ul/li"));
 			if (gameDateElements.size() == 0) {
 				return;
@@ -285,6 +285,7 @@ public class AppCommon implements CommonData {
 					// System.out.println("====== [AppCommon] getGameDateList "+dateTxt);
 				}
 			}
+			gameDateElements = null;
 		} catch (Exception e) {
 			String exceptionMsg = e.getMessage();
 			System.out.println("====== [AppCommon] getGameDateList Exception Message = "+exceptionMsg);

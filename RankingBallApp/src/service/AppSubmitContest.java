@@ -111,7 +111,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 					System.out.println("===================================");
 					System.out.println("====== [SUBMIT] "+homeTeam+" vs " + awayTeam);
 					System.out.println("====== [SUBMIT] "+contestSize+" CONTESTS");
-					System.out.println(matchTitle);
+					System.out.println("====== [SUBMIT] "+matchTitle);
 					System.out.println("====== [SUBMIT] Selected Currency = "+CURRENCY);
 					System.out.println("====== [SUBMIT] Selected Game Type = "+SUBMIT_GAME_TYPE);
 					
