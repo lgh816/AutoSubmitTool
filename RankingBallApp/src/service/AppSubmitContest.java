@@ -151,7 +151,7 @@ public class AppSubmitContest extends Thread implements CommonData {
 							if (checkCurrencyType) {
 								if (!"JOINED".equals(joinStatus)) {
 									String checkGameTypeCss = contestElements.get(j).findElement(By.cssSelector(".row")).getAttribute("class");
-									System.out.println("====== [SUBMIT] Game Type = "+checkGameTypeCss);
+									// System.out.println("====== [SUBMIT] Game Type = "+checkGameTypeCss);
 									if (SUBMIT_GAME_TYPE == "All" || checkGameTypeCss.contains(SUBMIT_GAME_TYPE)) {
 										Thread.sleep(1000);
 										wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".entry-fee")));
@@ -179,11 +179,16 @@ public class AppSubmitContest extends Thread implements CommonData {
 										}
 									}
 								} else if ("JOINED".equals(joinStatus)) {
-									if ("asset-121015".equals(kindOfFee)) { // GDC
+									/*if ("asset-121015".equals(kindOfFee)) { // GDC
 										totalGdc += gameFee;
 									} else { // asset-121017 -> Point
 										totalPoint += gameFee;
-									}
+									}*/
+								}
+								if ("asset-121015".equals(kindOfFee)) { // GDC
+									totalGdc += gameFee;
+								} else { // asset-121017 -> Point
+									totalPoint += gameFee;
 								}
 							}
 						}
